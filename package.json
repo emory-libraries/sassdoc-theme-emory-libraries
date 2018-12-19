@@ -5,24 +5,42 @@
   "keywords": [
     "sassdoc-theme"
   ],
+  "license": "MIT",
+  "author": "Lauren Hamel",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emory-libraries/sassdoc-theme-emory-libraries.git"
+  },
+  "bugs": {
+    "url": "https://github.com/emory-libraries/sassdoc-theme-emory-libraries/issues"
+  },
+  "homepage": "https://github.com/emory-libraries/sassdoc-theme-emory-libraries#readme",
+  "main": "index.js",
+  "scripts": {},
   "dependencies": {
     "extend": "^1.0.0",
     "handlebars": "^4.0.12",
+    "handlebars-helpers": "^0.10.0",
+    "path": "^0.12.7",
     "sassdoc-extras": "^2.0.0",
-    "themeleon": "^3.0.0"
+    "themeleon": "^3.0.2"
   },
   "engines": {
     "node": ">=0.10.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.0",
     "bluebird": "^3.5.3",
     "fs-extra": "^7.0.1",
+    "grunt": "^1.0.3",
     "grunt-autoprefixer": "^3.0.4",
+    "grunt-babel": "^8.0.0",
     "grunt-browser-sync": "^2.2.0",
     "grunt-contrib-imagemin": "^3.1.0",
-    "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-uglify": "^4.0.0",
     "grunt-contrib-watch": "^1.1.0",
+    "grunt-dart-sass": "^1.0.0",
     "grunt-newer": "^1.3.0",
     "grunt-sassdoc": "^2.0.3",
     "grunt-svgmin": "^5.0.0",
