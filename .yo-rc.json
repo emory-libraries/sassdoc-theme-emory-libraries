@@ -1,0 +1,15 @@
+{
+  "generator-sassdoc-theme": {
+    "themeName": "emory-libraries",
+    "themeEngine": "handlebars",
+    "author": {
+      "name": "Lauren Hamel"
+    },
+    "themeDesc": "The Emory Libraries SassDoc theme",
+    "version": "1.0.0",
+    "useExtras": true,
+    "useSass": true,
+    "useSassUtils": false,
+    "useTaskRunner": "grunt"
+  }
+}
