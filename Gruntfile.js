@@ -1,52 +1,178 @@
-'use strict';
+/**
+ * Load utilities.
+ */
+const extend = require('extend');
+const path = extend(require('path'), {
+  extnameComplete: require('path-complete-extname')
+});
+const fs = require('fs-extra');
+const grunt = require('grunt');
 
-var path = require('path');
-var fs = require('fs-extra');
-var Promise = require('bluebird');
-var copy = Promise.promisify(fs.copy);
+/** 
+ * Identify the root paths of any Sass projects
+ * on your local machine that you wish to compile
+ * using this theme. This is handy for recompiling
+ * any SassDocs on your system while making changes
+ * to this theme. Paths should be relative to this
+ * package's root directory.
+ */
+const projects = [
+  '../template-sass'
+];
 
-// Set your Sass project (the one you're generating docs for) path.
-// Relative to this Gruntfile.
-const PROJECT_ROOT = '../template-sass';
-
-// Project path helper.
-var project = function () {
-  
-  var args = [].prototype.slice.call(arguments);
-  
-  args.unshift(PROJECT_ROOT);
-  
-  return path.resolve.apply(path, args);
-  
-};
-
-// Project specific paths.
-var dirs = {
+/**
+ * Identify theme-specific paths.
+ */
+const dir = {
   root: './',
-  scss: 'scss',
-  css: 'assets/css',
-  images: 'assets/images',
-  js: 'assets/js',
-  template: 'views',
-  src: project(),
-  docs: project('/docs')
+  src: {
+    root: 'src',
+    scss: 'src/scss',
+    js: 'src/js',
+    images: 'src/images',
+    template: 'src/views'
+  },
+  dist: {
+    root: 'dist',
+    js: 'dist/js',
+    css: 'dist/css',
+    image: 'dist/images',
+    template: 'dist/views'
+  },
+  projects: projects.map((project) => path.resolve(project))
 };
 
-// Tasks configuration.
+/**
+ * Identify the theme's CSS (stylesheet) files. This
+ * will be used to dynamically build our `<link/>`
+ * tags.
+ */
+const css = [
+  'main.css'
+];
+
+/**
+ * Define the theme's JS dependencies.
+ */
+const dependencies = [
+  'jquery',
+  'prism', 
+  'fuse'
+];
+
+/**
+ * Identify the theme's JS (script) files and
+ * merge any JS dependencies. This will be used
+ * to dynamically build our `<script/>` tags.
+ */
+const js = [
+  ...dependencies.map((script) => `dependencies/${script}.js`),
+  'main.js'
+];
+
+/**
+ * Set the default port for use with browserSync.
+ */
+const port = 3000;
+
+/** Enable browserSync task for multiple projects
+ * by assigning each project to its own custom 
+ * port.
+ */
+const browserSync = dir.projects.map((project, index) => {
+  
+  let setting = {};
+  
+  let docs = path.resolve(project, 'docs');
+  
+  setting[path.basename(project)] = {
+    options: {
+      watchTask: true,
+      server: {
+        baseDir: docs
+      },
+      port: port + index
+    },
+    bsFiles: {
+      src: [
+        path.resolve(docs, '*.html'),
+        path.resolve(docs, '**/*.css'),
+        path.resolve(docs, '**/*.js'),
+        path.resolve(docs, '**/*.{svg,png,jpg,jpeg,gif}')
+      ]
+    }
+  };
+  
+  return setting;
+  
+}).reduce((settings, setting) => extend(settings, setting), {});
+
+/**
+ * Enable SassDoc compilation for multiple projects.
+ *
+ * See: http://sassdoc.com/customising-the-view
+ */
+const sassdoc = dir.projects.map((project) => {
+  
+  let setting = {};
+  
+  let pkg = path.resolve(project, 'package.json');
+  let config = path.resolve(project, '.sassdocrc');
+  let docs = path.resolve(project, 'docs');
+  
+  setting[path.basename(project)] = {
+    options: {
+      verbose: true,
+      dest: docs,
+      package: pkg,
+      config: config,
+      cache: false,
+    },
+    src: grunt.file.expand([
+      path.join(project, 'src/scss/**/*.scss'),
+      path.join(project, 'scss/**/*.scss'),
+      '!' + path.join(project, 'src/scss/vends/**'),
+      '!' + path.join(project, 'scss/vends/**'),
+    ])
+  };
+  
+  return setting;
+  
+}).reduce((settings, setting) => extend(settings, setting), {});
+
+/** 
+ * Tasks configuration.
+ */
 var config = {
 
-  dirs: dirs,
+  pkg: grunt.file.readJSON('package.json'),
+  
+  dir: dir,
 
-  sass: {
-    options: {
-      style: 'compressed'
-    },
-    develop: {
+  'dart-sass': {
+    dev: {
+      options: {
+        sourceMap: false,
+        style: 'expanded'
+      },
       files: [{
         expand: true,
-        cwd: '<%= dirs.scss %>',
+        cwd: '<%= dir.src.scss %>',
         src: ['*.scss'],
-        dest: '<%= dirs.css %>',
+        dest: '<%= dir.dist.css %>',
+        ext: '.css'
+      }]
+    },
+    dist: {
+      options: {
+        sourceMap: false,
+        style: 'compressed'
+      },
+      files: [{
+        expand: true,
+        cwd: '<%= dir.src.scss %>',
+        src: ['*.scss'],
+        dest: '<%= dir.dist.css %>',
         ext: '.css'
       }]
     }
@@ -54,54 +180,56 @@ var config = {
 
   watch: {
     scss: {
-      files: ['<%= dirs.scss %>/**/*.scss'],
-      tasks: ['sass:develop', 'autoprefixer:develop', 'dump:css']
+      files: ['<%= dir.src.scss %>/**/*.scss'],
+      tasks: ['dart-sass:dev', 'postcss', 'copy:css']
     },
     js: {
-      files: ['<%= dirs.js %>/**/*.js', '!<%= dirs.js %>/**/*.min.js'],
-      tasks: ['jshint', 'babel', 'uglify:dist', 'dump:js']
+      files: ['<%= dir.src.js %>/**/*.js'],
+      tasks: ['jshint', 'babel', 'copy:js']
     },
     template: {
-      files: ['<%= dirs.template %>/**/*.handlebars'],
-      tasks: ['sassdoc:develop']
+      files: ['<%= dir.src.template %>/**/*.handlebars'],
+      tasks: ['replace:dev', 'sassdoc']
+    },
+    images: {
+      files: ['<%= dir.src.images %>/**/*'],
+      tasks: ['svgmin', 'imagemin']
     },
     config: {
       files: ['index.js', 'Gruntfile.js', '.babelrc', '.jshintrc'],
-      tasks: ['sassdoc:develop'],
+      tasks: ['sassdoc'],
       options: {
         reload: true
       }
     }
   },
 
-  browserSync: {
+  browserSync,
+  
+  postcss: {
     options: {
-      watchTask: true,
-      server: {
-        baseDir: '<%= dirs.docs %>'
-      }
+      processors: [
+        require('autoprefixer')({browsers: ['last 2 versions', '> 1%', 'ie 9']})
+      ]
     },
-    develop: {
-      bsFiles: {
-        src: [
-          '<%= dirs.docs %>/*.html',
-          '<%= dirs.docs %>/**/*.css',
-          '<%= dirs.docs %>/**/*.js'
-        ]
-      }
-    }
-  },
-
-  autoprefixer: {
-    options: {
-      browsers: ['last 2 version', '> 1%', 'ie 9']
-    },
-    develop: {
+    default: {
       files: [{
         expand: true,
-        cwd: '<%= dirs.css %>',
-        src: '{,*/}*.css',
-        dest: '<%= dirs.css %>'
+        cwd: '<%= dir.dist.css %>',
+        src: ['{,*/}*.css'],
+        dest: '<%= dir.dist.css %>'
+      }]
+    }
+  },
+  
+  cssmin: {
+    dist: {
+      files: [{
+        expand: true,
+        cwd: '<%= dir.dist.css %>',
+        src: ['*.css', '!*.min.css'],
+        dest: '<%= dir.dist.css %>',
+        ext: '.min.css'
       }]
     }
   },
@@ -109,9 +237,13 @@ var config = {
   uglify: {
     options: {},
     dist: {
-      files: {
-        '<%= dirs.js %>/main.min.js': ['<%= dirs.js %>/main.babel.js']
-      }
+      files: [{
+        expand: true,
+        cwd: '<%= dir.dist.js %>',
+        src: ['*.js', '!*.min.js'],
+        dest: '<%= dir.dist.js %>',
+        ext: '.min.js'
+      }]
     }
   },
 
@@ -119,9 +251,9 @@ var config = {
     dist: {
       files: [{
         expand: true,
-        cwd: '<%= dirs.images %>',
-        src: '{,*/}*.svg',
-        dest: '<%= dirs.images %>'
+        cwd: '<%= dir.src.images %>',
+        src: ['**/*.svg'],
+        dest: '<%= dir.dist.images %>'
       }]
     }
   },
@@ -130,36 +262,23 @@ var config = {
     dist: {
       files: [{
         expand: true,
-        cwd: '<%= dirs.images %>',
-        src: '{,*/}*.{gif,jpeg,jpg,png}',
-        dest: '<%= dirs.images %>'
+        cwd: '<%= dir.src.images %>',
+        src: ['**/*.{gif,jpeg,jpg,png}'],
+        dest: '<%= dir.dist.images %>'
       }]
     }
   },
 
-  // SassDoc compilation.
-  // See: http://sassdoc.com/customising-the-view/
-  sassdoc: {
-    options: {
-      verbose: true,
-      dest: dirs.docs,
-      package: '<%= dirs.src %>/package.json',
-      config: '<%= dirs.src %>/.sassdocrc',
-      //theme: dirs.root,
-      // Disable cache to enable live-reloading.
-      // Usefull for some template engines (e.g. Swig).
-      cache: false,
-    },
-    develop: {
-      src: '<%= dirs.src %>'
-    }
-  },
+  sassdoc,
   
   babel: {
-    dev: {
-      files: {
-        '<%= dirs.js %>/main.babel.js': '<%= dirs.js %>/main.js'
-      }
+    default: {
+      files: [{
+        expand: true,
+        cwd: '<%= dir.src.js %>',
+        src: ['**/*.js'],
+        dest: '<%= dir.dist.js %>'
+      }]
     }
   },
   
@@ -168,66 +287,206 @@ var config = {
       jshintrc: true
     },
     dev: {
-      files: {
-        src: ['<%= dirs.js %>/**/*.js', '!<%= dirs.js %>/**/*.{min,babel}.js']
-      }
+      files: [{
+        expand: true,
+        cwd: '<%= dir.src.js %>',
+        src: ['**/*.js']
+      }]
+    }
+  },
+  
+  clean: {
+    dist: ['<%= dir.dist.root %>'],
+    unminjs: ['<%= dir.dist.js %>/**/*.js', '!<%= dir.dist.js %>/**/*.min.js'],
+    unmincss: ['<%= dir.dist.js %>/**/*.css', '!<%= dir.dist.js %>/**/*.min.css']
+  },
+  
+  copy: {
+    js: {
+      files: dir.projects.reduce((files, project) => {
+        
+        files.push({
+          expand: true,
+          cwd: '<%= dir.dist.js %>',
+          src: ['**/*.js'],
+          dest:  path.resolve(project, 'docs/js')
+        });
+        
+        return files;
+        
+      }, [])
+    },
+    css: {
+      files: dir.projects.reduce((files, project) => {
+        
+        files.push({
+          expand: true,
+          cwd: '<%= dir.dist.css %>',
+          src: ['**/*.css'],
+          dest:  path.resolve(project, 'docs/css')
+        });
+        
+        return files;
+        
+      }, [])
+    }
+  },
+  
+  replace: {
+    dev: {
+      options: {
+        patterns: [
+          {
+            match: 'css',
+            replacement: () => css.map((src) => {
+              
+              const template = '<link rel="stylesheet" href=":src">';
+              const prefix = 'css/';
+              const suffix = '.css';
+              const ext = path.extnameComplete(src);
+              
+              return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
+              
+            })
+          },
+          {
+            match: 'js',
+            replacement: () => js.map((src) => {
+              
+              const template = '<script src=":src"></script>';
+              const prefix = 'js/';
+              const suffix = '.js';
+              const ext = path.extnameComplete(src);
+              
+              return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
+              
+            })
+          },
+          {
+            match: 'gtm:head',
+            replacement: ''
+          },
+          {
+            match: 'gtm:body',
+            replacement: ''
+          }
+        ]
+      },
+      files: [{
+        expand: true, 
+        cwd: '<%= dir.src.template %>',
+        src: ['**/*.handlebars'],
+        dest: '<%= dir.dist.template %>'
+      }]
+    },
+    dist: {
+      options: {
+        patterns: [
+          {
+            match: 'css',
+            replacement: () => css.map((src) => {
+              
+              const template = '<link rel="stylesheet" href=":src">';
+              const prefix = 'css/';
+              const suffix = '.min.css';
+              const ext = path.extnameComplete(src);
+              
+              return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
+              
+            })
+          },
+          {
+            match: 'js',
+            replacement: () => js.map((src) => {
+              
+              const template = '<script src=":src"></script>';
+              const prefix = 'js/';
+              const suffix = '.min.js';
+              const ext = path.extnameComplete(src);
+              
+              return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
+              
+            })
+          },
+          {
+            match: 'gtm:head',
+            replacement: '{{#if googleAnalytics}}{{> gtm-head}}{{/if}}'
+          },
+          {
+            match: 'gtm:body',
+            replacement: '{{#if googleAnalytics}}{{> gtm-body}}{{/if}}'
+          }
+        ]
+      },
+      files: [{
+        expand: true, 
+        cwd: '<%= dir.src.template %>',
+        src: ['**/*.handlebars'],
+        dest: '<%= dir.dist.template %>'
+      }]
     }
   }
 
 };
 
-
+/**
+ * Initializes and exports Grunt configurations and tasks.
+ */
 module.exports = function (grunt) {
 
-  // Load all grunt tasks matching the `grunt-*` pattern.
+  // Load Grunt tasks.
   require('load-grunt-tasks')(grunt);
 
   // Time how long tasks take.
   require('time-grunt')(grunt);
 
-
+  // Initialize our Grunt configurations.
   grunt.initConfig(config);
-
-
-  // Dump css or js files from theme into `docs/assets` whenever they get modified.
-  // Prevent requiring a full SassDoc compilation.
-  grunt.registerTask('dump', 'Dump CSS/JS to docs/assets', function () {
-    var done = this.async();
-    var target = this.args[0];
-    var src = dirs[target];
-    var dest = path.join(dirs.docs, 'assets', target);
-
-    copy(src, dest).then(function () {
-      grunt.log.ok('Dump: ' + src + ' copied to ' + path.relative(__dirname, dest));
-      done();
-    });
-  });
-
-  // Development task.
-  // While working on a theme.
-  grunt.registerTask('dev', 'Development task', function () {
-    var tasks = ['browserSync:develop', 'watch'];
-    var docs = fs.existsSync(dirs.docs);
-
-    if (!docs) {
-      grunt.log.ok('Running initial SassDoc compilation: ' + dirs.docs);
-      tasks.unshift('sassdoc:develop');
-    }
-
-    grunt.task.run(tasks);
-  });
-
-
-  // Pre release/deploy optimisation tasks.
-  grunt.registerTask('dist', [
-    'uglify:dist',
-    'newer:svgmin:dist',
-    'newer:imagemin:dist',
-    'dump:js',
-    'dump:css',
-    'dump:images'
+  
+  // Register a build task for development environments.
+  // This task should build our theme and deploy it to all
+  // of our projects.
+  grunt.registerTask('build:dev', [
+    'clean:dist',
+    'replace:dev',
+    'dart-sass:dev',
+    'postcss',
+    'babel',
+    'svgmin',
+    'imagemin',
+    'copy',
+    'sassdoc'
   ]);
   
+  // Register a build task for production environments. 
+  grunt.registerTask('build:dist', [
+    'clean:dist',
+    'replace:dist',
+    'dart-sass:dist',
+    'postcss',
+    'cssmin',
+    'babel',
+    'uglify',
+    'svgmin',
+    'imagemin',
+    'clean',
+    'copy',
+    'sassdoc'
+  ]);
+  
+  // Register a `dev` task to use while building our theme.
+  grunt.registerTask('dev', [
+    'build:dev',
+    'browserSync',
+    'watch'
+  ]);
+
+  // Register a `dist` task to use for deploying our theme.
+  grunt.registerTask('dist', [
+    'build:dist'
+  ]);
+  
+  // Register the default Grunt task.
   grunt.registerTask('default', ['dev']);
 
 };

@@ -6,13 +6,24 @@ const fs = extend(require('fs'), {
   readdirSyncRecursive: require('fs-readdir-recursive')
 });
 const path = require('path');
+const requireDot = require('require-dot-file');
+
+/**
+ * Identify paths to theme files and resources.
+ */
+const dir = {
+  helpers: 'helpers',
+  partials: 'dist/views/partials',
+  template: 'dist/views',
+  assets: 'dist/'
+};
 
 /**
  * Load helpers to extend the handlebars.js templating engine.
  */
-const helpers = extend(require('handlebars-helpers')(), fs.readdirSyncRecursive(path.join(__dirname, 'helpers')).reduce((helpers, helper) => {
+const helpers = extend(require('handlebars-helpers')(), fs.readdirSyncRecursive(path.join(__dirname, dir.helpers)).reduce((helpers, helper) => {
 
-  let definition = require(`./helpers/${helper}`);
+  let definition = require(path.join(__dirname, dir.helpers, helper));
   
   return extend(helpers, definition);
   
@@ -21,12 +32,12 @@ const helpers = extend(require('handlebars-helpers')(), fs.readdirSyncRecursive(
 /**
  * Load partials for use with the handlebars.js templating engine.
  */
-const partials = fs.readdirSyncRecursive(path.join(__dirname, 'views/partials')).reduce((partials, partial) => {
+const partials = fs.readdirSyncRecursive(path.join(__dirname, dir.partials)).reduce((partials, partial) => {
   
   let ext = path.extname(partial);
   let include = partial.replace(ext, '');
 
-  partials[include] = `partials/${include}`;
+  partials[include] = path.join(dir.partials.replace(dir.template, ''), include);
   
   return partials;
   
@@ -63,7 +74,11 @@ const theme = themeleon(__dirname, (theme) => {
    * Copy the assets folder from the theme's directory in the
    * destination directory.
    */
-  theme.copy('assets');
+  fs.readdirSync(path.join(__dirname, dir.assets)).filter((asset) => {
+    
+    return asset != dir.template.replace(dir.assets, '');
+    
+  }).forEach((asset) => theme.copy(path.join(dir.assets, asset)));
 
   /**
    * Initialize our theme options to be passed into the templating engine.
@@ -74,16 +89,16 @@ const theme = themeleon(__dirname, (theme) => {
   });
 
   /**
-   * Render `views/index.handlebars` with the theme's context (`ctx` below)
+   * Render the template with the theme's context (`context` below)
    * as `index.html` in the destination directory.
    */
-  theme.handlebars('views/index.handlebars', 'index.html', options);
+  theme.handlebars(path.join(dir.template, 'index.handlebars'), 'index.html', options);
   
 });
 
 /**
  * Actual theme function. It takes the destination directory `dest`
- * (that will be handled by Themeleon), and the context variables `ctx`.
+ * (that will be handled by Themeleon), and the context variables `context`.
  *
  * Here, we will modify the context to have a `view` key defaulting to
  * a literal object, but that can be overriden by the user's
@@ -92,26 +107,16 @@ const theme = themeleon(__dirname, (theme) => {
 module.exports = function (dest, context) {
   
   /**
-   * Initializes theme definitions.
+   * Initializes theme configurations.
    */
-  let definitions = {
-    display: {
-      access: ['public', 'private'],
-      alias: false,
-      watermark: true,
-    },
-    groups: {
-      'undefined': 'General',
-    },
-    'shortcutIcon': 'http://sass-lang.com/favicon.ico',
-  };
+  let config = requireDot('./.sassdocrc');
 
   // Apply default values for groups and display.
-  context.groups = extend(definitions.groups, context.groups);
-  context.display = extend(definitions.display, context.display);
+  context.groups = extend(config.groups, context.groups);
+  context.display = extend(config.display, context.display);
 
   // Extend top-level context keys.
-  context = extend({}, definitions, context);
+  context = extend({}, config, context);
   
   /**
    * Extend SassDoc with SassDoc Extras.
