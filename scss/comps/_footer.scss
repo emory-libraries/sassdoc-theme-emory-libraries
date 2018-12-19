@@ -1,0 +1,33 @@
+@include b('footer') {
+  background: color('grey', 'light');
+  padding: 1em 0;
+  
+  .container { 
+    position: relative; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @include e('project-info') { flex-grow: 1; };
+  
+  @include e('watermark') {
+    margin-left: 1em;
+
+    svg {
+      display: block;
+      width: 50px;
+      filter: drop-shadow(2px 2px 3px rgba(color('black'), .2));
+    }
+    
+  };
+  
+};
+
+@include b('project-info') {
+  
+  @include e('name', 'version', 'license') { display: inline-block; }
+  @include e('version', 'license') { color: color('grey', 'darker'); }
+  @include e('license') { text-indent: -.25em; }
+  
+};

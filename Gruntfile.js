@@ -7,25 +7,29 @@ var copy = Promise.promisify(fs.copy);
 
 // Set your Sass project (the one you're generating docs for) path.
 // Relative to this Gruntfile.
-var projectPath = '../';
+const PROJECT_ROOT = '../template-sass';
 
 // Project path helper.
 var project = function () {
-  var args = Array.prototype.slice.call(arguments);
-  args.unshift(projectPath);
+  
+  var args = [].prototype.slice.call(arguments);
+  
+  args.unshift(PROJECT_ROOT);
+  
   return path.resolve.apply(path, args);
+  
 };
 
 // Project specific paths.
 var dirs = {
+  root: './',
   scss: 'scss',
   css: 'assets/css',
-  img: 'assets/img',
-  svg: 'assets/svg',
+  images: 'assets/images',
   js: 'assets/js',
-  tpl: 'views',
-  src: project('sass'),
-  docs: project('sassdoc')
+  template: 'views',
+  src: project(),
+  docs: project('/docs')
 };
 
 // Tasks configuration.
@@ -54,12 +58,19 @@ var config = {
       tasks: ['sass:develop', 'autoprefixer:develop', 'dump:css']
     },
     js: {
-      files: ['<%= dirs.js %>/**/*.js'],
-      tasks: ['dump:js']
+      files: ['<%= dirs.js %>/**/*.js', '!<%= dirs.js %>/**/*.min.js'],
+      tasks: ['jshint', 'babel', 'uglify:dist', 'dump:js']
     },
-    tpl: {
-      files: ['<%= dirs.tpl %>/**/*.+{handlebars|hbs}'],
+    template: {
+      files: ['<%= dirs.template %>/**/*.handlebars'],
       tasks: ['sassdoc:develop']
+    },
+    config: {
+      files: ['index.js', 'Gruntfile.js', '.babelrc', '.jshintrc'],
+      tasks: ['sassdoc:develop'],
+      options: {
+        reload: true
+      }
     }
   },
 
@@ -99,7 +110,7 @@ var config = {
     options: {},
     dist: {
       files: {
-        '<%= dirs.js %>/main.min.js': ['<%= dirs.js %>/main.js']
+        '<%= dirs.js %>/main.min.js': ['<%= dirs.js %>/main.babel.js']
       }
     }
   },
@@ -108,9 +119,9 @@ var config = {
     dist: {
       files: [{
         expand: true,
-        cwd: '<%= dirs.svg %>',
+        cwd: '<%= dirs.images %>',
         src: '{,*/}*.svg',
-        dest: '<%= dirs.svg %>'
+        dest: '<%= dirs.images %>'
       }]
     }
   },
@@ -119,9 +130,9 @@ var config = {
     dist: {
       files: [{
         expand: true,
-        cwd: '<%= dirs.img %>',
+        cwd: '<%= dirs.images %>',
         src: '{,*/}*.{gif,jpeg,jpg,png}',
-        dest: '<%= dirs.img %>'
+        dest: '<%= dirs.images %>'
       }]
     }
   },
@@ -132,13 +143,34 @@ var config = {
     options: {
       verbose: true,
       dest: dirs.docs,
-      theme: './',
+      package: '<%= dirs.src %>/package.json',
+      config: '<%= dirs.src %>/.sassdocrc',
+      //theme: dirs.root,
       // Disable cache to enable live-reloading.
       // Usefull for some template engines (e.g. Swig).
       cache: false,
     },
     develop: {
       src: '<%= dirs.src %>'
+    }
+  },
+  
+  babel: {
+    dev: {
+      files: {
+        '<%= dirs.js %>/main.babel.js': '<%= dirs.js %>/main.js'
+      }
+    }
+  },
+  
+  jshint: {
+    options: {
+      jshintrc: true
+    },
+    dev: {
+      files: {
+        src: ['<%= dirs.js %>/**/*.js', '!<%= dirs.js %>/**/*.{min,babel}.js']
+      }
     }
   }
 
@@ -173,7 +205,7 @@ module.exports = function (grunt) {
 
   // Development task.
   // While working on a theme.
-  grunt.registerTask('develop', 'Development task', function () {
+  grunt.registerTask('dev', 'Development task', function () {
     var tasks = ['browserSync:develop', 'watch'];
     var docs = fs.existsSync(dirs.docs);
 
@@ -190,7 +222,12 @@ module.exports = function (grunt) {
   grunt.registerTask('dist', [
     'uglify:dist',
     'newer:svgmin:dist',
-    'newer:imagemin:dist'
+    'newer:imagemin:dist',
+    'dump:js',
+    'dump:css',
+    'dump:images'
   ]);
+  
+  grunt.registerTask('default', ['dev']);
 
 };

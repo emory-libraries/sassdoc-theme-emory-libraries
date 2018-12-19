@@ -1,24 +1,51 @@
 /**
+ * Load utilities.
+ */
+const extend = require('extend');
+const fs = extend(require('fs'), {
+  readdirSyncRecursive: require('fs-readdir-recursive')
+});
+const path = require('path');
+
+/**
+ * Load helpers to extend the handlebars.js templating engine.
+ */
+const helpers = extend(require('handlebars-helpers')(), fs.readdirSyncRecursive(path.join(__dirname, 'helpers')).reduce((helpers, helper) => {
+
+  let definition = require(`./helpers/${helper}`);
+  
+  return extend(helpers, definition);
+  
+}, {}));
+
+/**
+ * Load partials for use with the handlebars.js templating engine.
+ */
+const partials = fs.readdirSyncRecursive(path.join(__dirname, 'views/partials')).reduce((partials, partial) => {
+  
+  let ext = path.extname(partial);
+  let include = partial.replace(ext, '');
+
+  partials[include] = `partials/${include}`;
+  
+  return partials;
+  
+}, {});
+
+/**
  * Themeleon template helper, using consolidate.js module.
  *
  * See <https://github.com/themeleon/themeleon>.
  * See <https://github.com/tj/consolidate.js>.
  */
-var themeleon = require('themeleon')().use('consolidate');
+const themeleon = require('themeleon')().use('consolidate');
 
 /**
- * Utility function we will use to merge a default configuration
- * with the user object.
- */
-var extend = require('extend');
-
-/**
- * SassDoc extras (providing Markdown and other filters, and different way to
- * index SassDoc data).
+ * Load SassDoc Extras.
  *
  * See <https://github.com/SassDoc/sassdoc-extras>.
  */
-var extras = require('sassdoc-extras');
+const extras = require('sassdoc-extras');
 
 /**
  * The theme function. You can directly export it like this:
@@ -30,26 +57,28 @@ var extras = require('sassdoc-extras');
  *
  * The theme function describes the steps to render the theme.
  */
-var theme = themeleon(__dirname, function (t) {
+const theme = themeleon(__dirname, (theme) => {
+  
   /**
    * Copy the assets folder from the theme's directory in the
    * destination directory.
    */
-  t.copy('assets');
+  theme.copy('assets');
 
-  var options = {
-    partials: {
-      // Add your partial files here.
-      // foo: 'views/foo.handlebars',
-      // 'foo/bar': 'views/foo/bar.handlebars',
-    },
-  };
+  /**
+   * Initialize our theme options to be passed into the templating engine.
+   */
+  var options = extend(theme.ctx, {
+    partials,
+    helpers
+  });
 
   /**
    * Render `views/index.handlebars` with the theme's context (`ctx` below)
    * as `index.html` in the destination directory.
    */
-  t.handlebars('views/index.handlebars', 'index.html', options);
+  theme.handlebars('views/index.handlebars', 'index.html', options);
+  
 });
 
 /**
@@ -60,8 +89,12 @@ var theme = themeleon(__dirname, function (t) {
  * a literal object, but that can be overriden by the user's
  * configuration.
  */
-module.exports = function (dest, ctx) {
-  var def = {
+module.exports = function (dest, context) {
+  
+  /**
+   * Initializes theme definitions.
+   */
+  let definitions = {
     display: {
       access: ['public', 'private'],
       alias: false,
@@ -74,55 +107,27 @@ module.exports = function (dest, ctx) {
   };
 
   // Apply default values for groups and display.
-  ctx.groups = extend(def.groups, ctx.groups);
-  ctx.display = extend(def.display, ctx.display);
+  context.groups = extend(definitions.groups, context.groups);
+  context.display = extend(definitions.display, context.display);
 
   // Extend top-level context keys.
-  ctx = extend({}, def, ctx);
-
+  context = extend({}, definitions, context);
+  
   /**
-   * Parse text data (like descriptions) as Markdown, and put the
-   * rendered HTML in `html*` variables.
-   *
-   * For example, `ctx.package.description` will be parsed as Markdown
-   * in `ctx.package.htmlDescription`.
-   *
-   * See <http://sassdoc.com/extra-tools/#markdown>.
+   * Extend SassDoc with SassDoc Extras.
    */
-  extras.markdown(ctx);
+  extras(context, ...[
+    'description',
+    'markdown',
+    'display',
+    'groupName',
+    'shortcutIcon',
+    'sort',
+    'resolveVariables'
+  ]);
 
   /**
-   * Add a `display` property for each data item regarding of display
-   * configuration (hide private items and aliases for example).
-   *
-   * You'll need to add default values in your `.sassdocrc` before
-   * using this filter:
-   *
-   *     {
-   *       "display": {
-   *         "access": ["public", "private"],
-   *         "alias": false
-   *       }
-   *     }
-   *
-   * See <http://sassdoc.com/extra-tools/#display-toggle>.
-   */
-  extras.display(ctx);
-
-  /**
-   * Allow the user to give a name to the documentation groups.
-   *
-   * We can then have `@group slug` in the docblock, and map `slug`
-   * to `Some title string` in the theme configuration.
-   *
-   * **Note:** all items without a group are in the `undefined` group.
-   *
-   * See <http://sassdoc.com/extra-tools/#groups-aliases>.
-   */
-  extras.groupName(ctx);
-
-  /**
-   * Use SassDoc indexer to index the data by group and type, so we
+   * Use SassDoc Extra's indexer to index the data by group and type, so we
    * have the following structure:
    *
    *     {
@@ -141,16 +146,20 @@ module.exports = function (dest, ctx) {
    * You can then use `data.byGroupAndType` instead of `data` in your
    * templates to manipulate the indexed object.
    */
-  ctx.data.byGroupAndType = extras.byGroupAndType(ctx.data);
-
-  // Avoid key collision with Handlebars default `data`.
-  // @see https://github.com/SassDoc/generator-sassdoc-theme/issues/22
-  ctx._data = ctx.data;
-  delete ctx.data;
+  context.data.byGroupAndType = extras.byGroupAndType(context.data);
 
   /**
-   * Now we have prepared the data, we can proxy to the Themeleon
-   * generated theme function.
+   * Avoid key collision with Handlebars default `data`.
+   *
+   * @see https://github.com/SassDoc/generator-sassdoc-theme/issues/22
+   */
+  context._data = context.data;
+  delete context.data;
+
+  /**
+   * Now we have prepared the data, and we can proxy to the Themeleon
+   * generator for rendering our theme.
    */
   return theme.apply(this, arguments);
+  
 };
