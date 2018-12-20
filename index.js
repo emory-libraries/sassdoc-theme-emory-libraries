@@ -11,7 +11,9 @@ const path = require('path');
  * Identify paths to theme files and resources.
  */
 const dir = {
-  helpers: 'helpers',
+  helpers: 'extensions/helpers',
+  annotations: 'extensions/annotations',
+  extras: 'extensions/extras',
   partials: 'dist/views/partials',
   template: 'dist/views',
   assets: 'dist/'
@@ -43,6 +45,17 @@ const partials = fs.readdirSyncRecursive(path.join(__dirname, dir.partials)).red
 }, {});
 
 /**
+ * Load custom annotations to extend our SassDoc documentation.
+ */
+const annotations = fs.readdirSyncRecursive(path.join(__dirname, dir.annotations)).reduce((annotations, annotation) => {
+  
+  annotations.push(require(path.join(__dirname, dir.annotations, annotation)));
+  
+  return annotations;
+  
+}, []);
+
+/**
  * Themeleon template helper, using consolidate.js module.
  *
  * See <https://github.com/themeleon/themeleon>.
@@ -51,11 +64,21 @@ const partials = fs.readdirSyncRecursive(path.join(__dirname, dir.partials)).red
 const themeleon = require('themeleon')().use('consolidate');
 
 /**
- * Load SassDoc Extras.
+ * Load SassDoc Extras and merge any custom extras that
+ * are specific to our theme.
  *
  * See <https://github.com/SassDoc/sassdoc-extras>.
  */
-const extras = require('sassdoc-extras');
+const extras = extend(require('sassdoc-extras'), fs.readdirSyncRecursive(path.join(__dirname, dir.extras)).reduce((extras, extra) => {
+  
+  const ext = path.extname(extra);
+  const name = path.basename(extra, `.${ext}`);
+  
+  extras[name] = require(path.join(__dirname, dir.extras, extra));
+  
+  return extras;
+  
+}, {}));
 
 /**
  * The theme function. You can directly export it like this:
@@ -169,3 +192,8 @@ module.exports = function (dest, ctx) {
   return theme.apply(this, arguments);
   
 };
+
+/**
+ * Extend the theme using custom annotations.
+ */
+module.exports.annotations = annotations;
