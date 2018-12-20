@@ -2,11 +2,10 @@
  * Load utilities.
  */
 const extend = require('extend');
-const fs = extend(require('fs'), {
+const fs = extend(require('fs-extra'), {
   readdirSyncRecursive: require('fs-readdir-recursive')
 });
 const path = require('path');
-const requireDot = require('require-dot-file');
 
 /**
  * Identify paths to theme files and resources.
@@ -68,7 +67,7 @@ const extras = require('sassdoc-extras');
  *
  * The theme function describes the steps to render the theme.
  */
-const theme = themeleon(__dirname, (theme) => {
+const theme = themeleon(__dirname, function (t) { 
   
   /**
    * Copy the assets folder from the theme's directory in the
@@ -78,50 +77,52 @@ const theme = themeleon(__dirname, (theme) => {
     
     return asset != dir.template.replace(dir.assets, '');
     
-  }).forEach((asset) => theme.copy(path.join(dir.assets, asset)));
+  }).forEach((asset) => t.copy(path.join(dir.assets, asset), asset));
 
   /**
    * Initialize our theme options to be passed into the templating engine.
    */
-  var options = extend(theme.ctx, {
+  const options = extend(t.ctx, {
     partials,
     helpers
   });
 
   /**
-   * Render the template with the theme's context (`context` below)
+   * Render the template with the theme's context (`ctx` below)
    * as `index.html` in the destination directory.
    */
-  theme.handlebars(path.join(dir.template, 'index.handlebars'), 'index.html', options);
+  t.handlebars(path.join(dir.template, 'index.handlebars'), 'index.html', options);
   
 });
 
 /**
  * Actual theme function. It takes the destination directory `dest`
- * (that will be handled by Themeleon), and the context variables `context`.
+ * (that will be handled by Themeleon), and the context variables `ctx`.
  *
  * Here, we will modify the context to have a `view` key defaulting to
  * a literal object, but that can be overriden by the user's
  * configuration.
  */
-module.exports = function (dest, context) {
-  
+module.exports = function (dest, ctx) {
+ 
   /**
    * Initializes theme configurations.
    */
-  let config = requireDot('./.sassdocrc');
+  let config = fs.readJsonSync(path.resolve(__dirname, '.sassdocrc'));
 
-  // Apply default values for groups and display.
-  context.groups = extend(config.groups, context.groups);
-  context.display = extend(config.display, context.display);
+  /**
+   * Apply default values for groups and display.
+   */
+  ctx.groups = extend(config.groups, ctx.groups);
+  ctx.display = extend(config.display, ctx.display);
 
   // Extend top-level context keys.
-  context = extend({}, config, context);
+  ctx = extend({}, config, ctx);
   
   /**
    * Extend SassDoc with SassDoc Extras.
    */
-  extras(context, ...[
+  extras(ctx, ...[
     'description',
     'markdown',
     'display',
@@ -151,15 +152,15 @@ module.exports = function (dest, context) {
    * You can then use `data.byGroupAndType` instead of `data` in your
    * templates to manipulate the indexed object.
    */
-  context.data.byGroupAndType = extras.byGroupAndType(context.data);
+  ctx.data.byGroupAndType = extras.byGroupAndType(ctx.data);
 
   /**
    * Avoid key collision with Handlebars default `data`.
    *
    * @see https://github.com/SassDoc/generator-sassdoc-theme/issues/22
    */
-  context._data = context.data;
-  delete context.data;
+  ctx._data = ctx.data;
+  delete ctx.data;
 
   /**
    * Now we have prepared the data, and we can proxy to the Themeleon

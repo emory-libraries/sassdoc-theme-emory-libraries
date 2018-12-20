@@ -4,13 +4,13 @@
     
     {{#if display.logo}}
     
-      <a href="{{default package.homepage '//laurenhamel.github.io/brandy'}}">
+      <a href="{{package.homepage}}">
         {{> logo}}
       </a>
     
     {{else}}
     
-      <a href="{{default package.homepage '//laurenhamel.github.io/brandy'}}">
+      <a href="{{package.homepage}}">
         {{titleize package.name}}
       </a>
 

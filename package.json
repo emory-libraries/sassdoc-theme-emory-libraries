@@ -53,7 +53,6 @@
     "grunt-svgmin": "^5.0.0",
     "load-grunt-tasks": "^4.0.0",
     "path-complete-extname": "^1.0.0",
-    "require-dot-file": "^0.4.0",
     "time-grunt": "^2.0.0"
   }
 }

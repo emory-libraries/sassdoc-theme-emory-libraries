@@ -116,23 +116,20 @@ const sassdoc = dir.projects.map((project) => {
   
   let setting = {};
   
-  let pkg = path.resolve(project, 'package.json');
-  let config = path.resolve(project, '.sassdocrc');
-  let docs = path.resolve(project, 'docs');
+  let pkg = path.join(project, 'package.json');
+  let config = path.join(project, '.sassdocrc');
+  let docs = path.join(project, 'docs');
   
   setting[path.basename(project)] = {
     options: {
-      verbose: true,
       dest: docs,
       package: pkg,
       config: config,
       cache: false,
     },
     src: grunt.file.expand([
-      path.join(project, 'src/scss/**/*.scss'),
-      path.join(project, 'scss/**/*.scss'),
-      '!' + path.join(project, 'src/scss/vends/**'),
-      '!' + path.join(project, 'scss/vends/**'),
+      path.join(project, '**/scss/**/*.scss'),
+      '!' + path.join(project, '**/scss/vends/**/*.scss')
     ])
   };
   
@@ -298,7 +295,7 @@ var config = {
   clean: {
     dist: ['<%= dir.dist.root %>'],
     unminjs: ['<%= dir.dist.js %>/**/*.js', '!<%= dir.dist.js %>/**/*.min.js'],
-    unmincss: ['<%= dir.dist.js %>/**/*.css', '!<%= dir.dist.js %>/**/*.min.css']
+    unmincss: ['<%= dir.dist.css %>/**/*.css', '!<%= dir.dist.css %>/**/*.min.css']
   },
   
   copy: {
@@ -469,7 +466,8 @@ module.exports = function (grunt) {
     'uglify',
     'svgmin',
     'imagemin',
-    'clean',
+    'clean:unminjs',
+    'clean:unmincss',
     'copy',
     'sassdoc'
   ]);
