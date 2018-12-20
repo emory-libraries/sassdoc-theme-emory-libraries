@@ -64,21 +64,24 @@ const annotations = fs.readdirSyncRecursive(path.join(__dirname, dir.annotations
 const themeleon = require('themeleon')().use('consolidate');
 
 /**
- * Load SassDoc Extras and merge any custom extras that
- * are specific to our theme.
+ * Load SassDoc Extras.
  *
  * See <https://github.com/SassDoc/sassdoc-extras>.
  */
-const extras = extend(require('sassdoc-extras'), fs.readdirSyncRecursive(path.join(__dirname, dir.extras)).reduce((extras, extra) => {
+const extras = require('sassdoc-extras');
+
+/**
+ * Load any custom extras that should be loaded into
+ * our theme, then merge them with our SassDoc Extras.
+ */
+fs.readdirSyncRecursive(path.join(__dirname, dir.extras)).forEach((extra) => {
   
   const ext = path.extname(extra);
   const name = path.basename(extra, `.${ext}`);
   
   extras[name] = require(path.join(__dirname, dir.extras, extra));
   
-  return extras;
-  
-}, {}));
+});
 
 /**
  * The theme function. You can directly export it like this:
@@ -143,17 +146,19 @@ module.exports = function (dest, ctx) {
   ctx = extend({}, config, ctx);
   
   /**
+   * Extract the names of the SassDoc Extras that can be
+   * loaded into the theme and that should be added to the 
+   * context's data set.
+   */
+  const extrasIgnore = ['length', 'name', 'prototype'];
+  const extrasNames = Object.getOwnPropertyNames(extras).filter((extra) => !extrasIgnore.includes(extra));
+  const extrasLoading = extrasNames.filter((extra) => extra.indexOf('by') !== 0);
+  const extrasProperties = extrasNames.filter((extra) => extra.indexOf('by') === 0);
+  
+  /**
    * Extend SassDoc with SassDoc Extras.
    */
-  extras(ctx, ...[
-    'description',
-    'markdown',
-    'display',
-    'groupName',
-    'shortcutIcon',
-    'sort',
-    'resolveVariables'
-  ]);
+  extras(ctx, ...extrasLoading);
 
   /**
    * Use SassDoc Extra's indexer to index the data by group and type, so we
@@ -175,7 +180,7 @@ module.exports = function (dest, ctx) {
    * You can then use `data.byGroupAndType` instead of `data` in your
    * templates to manipulate the indexed object.
    */
-  ctx.data.byGroupAndType = extras.byGroupAndType(ctx.data);
+  extrasProperties.forEach((extra) => ctx.data[extra] = extras[extra](ctx.data));
 
   /**
    * Avoid key collision with Handlebars default `data`.
