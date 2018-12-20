@@ -180,7 +180,7 @@ module.exports = function (dest, ctx) {
    * You can then use `data.byGroupAndType` instead of `data` in your
    * templates to manipulate the indexed object.
    */
-  extrasProperties.forEach((extra) => ctx.data[extra] = extras[extra](ctx.data));
+  extrasProperties.forEach((extra) => ctx.data[extra] = extras[extra](ctx.data, ctx));
 
   /**
    * Avoid key collision with Handlebars default `data`.

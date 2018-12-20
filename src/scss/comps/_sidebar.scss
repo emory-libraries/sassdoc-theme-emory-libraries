@@ -20,6 +20,36 @@
   
   };
   
+  @include e('group') {
+    
+    $levels: 5;
+    $indent: 1.5em;
+    
+    @for $level from 1 through $levels {
+      
+      $pad: ($indent * $level) - $indent;
+      
+      @include m('level-#{$level}') {
+        padding-left: $pad;
+        
+        @if( $level > 1 ) {
+        
+          &::before {
+            content: "";
+            position: absolute;
+            left: $pad;
+            height: 100%;
+            border-left: 1px solid color('grey', 'light');
+          }
+
+        }
+        
+      };
+      
+    }
+    
+  };
+  
   $levels: ();
   $levels: append($levels, 1.5em);
   $levels: append($levels, nth($levels, 1) + 1em);

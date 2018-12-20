@@ -3,8 +3,16 @@
  */
 module.exports = {
   
-  set: ( key, value, context ) => context[key] = value,
+  set ( key, value, context ) {
+    
+    context[key] = value;
+      
+  },
   
-  unset: ( key, context ) => delete context[key]
+  unset ( key, context ) {
+    
+    delete context[key];
+    
+  }
   
 };

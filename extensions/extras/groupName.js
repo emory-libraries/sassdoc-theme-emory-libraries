@@ -12,11 +12,8 @@ module.exports = function groupName (ctx) {
   // Capture namespace.
   ctx.namespace = ctx.namespace || '';
   
-  // Set delimiter characters.
-  const delimiters = ['.'];
-  
   // Build regex for detecting namespaced group names.
-  const regex = new RegExp(`^${ctx.namespace}[${delimiters.join('')}]`, 'i');
+  const regex = new RegExp(`^${ctx.namespace}[.]`, 'i');
 
   // Configure groups.
   Object.keys(ctx.groups).forEach((slug) => {
@@ -28,13 +25,13 @@ module.exports = function groupName (ctx) {
     const namespaced = regex.test(old);
     
     // Determine if the group is nested.
-    const nested = delimiters.map((delimiter) => old.indexOf(delimiter) > -1).indexOf(true) > -1;
+    const nested = old.indexOf('.') > -1;
     
     // Convert the slug to lowercase, remove any namespacing, and get any nested groups.
-    slug = old.toLowerCase().replace(regex, '').split(new RegExp(`[${delimiters.join('')}]`));
-    
+    slug = old.toLowerCase().replace(regex, '').split('.');
+
     // Permit nested groups.
-    slug.forEach((slug) => {
+    slug.forEach((slug) => { 
       
       // Save the group slug and title.
       ctx.groups[slug] = ctx.groups[slug] || slug;
@@ -56,7 +53,7 @@ module.exports = function groupName (ctx) {
     item.group.forEach((slug) => { 
       
       // Get the group slug.
-      slug = slug.toLowerCase().replace(regex, '').split(new RegExp(`[${delimiters.join('')}]`));
+      slug = slug.toLowerCase().replace(regex, '').split('.');
       
       // Permit nested groups.
       slug.forEach((slug) => {
