@@ -5,15 +5,15 @@
   
   {{> 'annotations/deprecated'}}
 
-  {{> 'annotations/preview'}}
-
+  {{> 'annotations/preview'}} 
+  
   {{#not alias}}
     
     {{set 'typeOfAnnotations' (lookup @root.display.annotations context.type) context}}
   
-    {{#forIn context.typeOfAnnotations}} {{!.}}
+    {{#forIn context.typeOfAnnotations}}
   
-      {{> (combine 'annotations/' .) item=this}}
+      {{> (combine 'annotations/' .) item=../.}}
   
     {{/forIn}}
   

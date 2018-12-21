@@ -39,7 +39,7 @@
               {{#is type '*'}}
                 Any
               {{else}}
-                {{formatParamType type}}
+                {{join (map (split type '|') trim) '</code> or <code>'}}
               {{/is}}
             </code>
           </td>
