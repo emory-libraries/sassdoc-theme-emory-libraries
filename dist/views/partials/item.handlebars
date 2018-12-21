@@ -1,5 +1,5 @@
-<section class="main__item container item{{#if self.alias}} item--alias{{/if}}{{#contains self 'deprecated'}} item--deprecated{{/contains}}"
-         id="{{group}}-{{type}}-{{self.context.name}}">
+<section class="main__item container item{{#if alias}} item--alias{{/if}}{{#contains self 'deprecated'}} item--deprecated{{/contains}}"
+         id="{{group}}-{{type}}-{{context.name}}">
 
   {{> 'annotations/name'}}
   
@@ -7,20 +7,19 @@
 
   {{> 'annotations/preview'}}
 
-  {{#not self.alias}}
+  {{#not alias}}
     
-    {{set 'typeOfAnnotations' (lookup @root.display.annotations self.context.type) self.context}}
-    {{set '@root' @root self}}
+    {{set 'typeOfAnnotations' (lookup @root.display.annotations context.type) context}}
   
-    {{#forIn self.context.typeOfAnnotations}}
+    {{#forIn context.typeOfAnnotations}}
   
-      {{> (concat 'annotations/' .) self=../self parent=../parent}}
+      {{> (concat 'annotations/' .) item=this}}
   
     {{/forIn}}
   
   {{else}}
   
-    <p>Refer to <a href="#{{group}}-{{type}}-{{self.alias}}">{{self.alias}}</a>.</p>
+    <p>Refer to <a href="#{{group}}-{{type}}-{{alias}}">{{alias}}</a>.</p>
   
   {{/not}}
 

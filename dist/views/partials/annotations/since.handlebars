@@ -1,10 +1,10 @@
-{{#if (gt self.since.length 1)}}
+{{#if (gt item.since.length 1)}}
 
   <h3 class="item__sub-heading">Changelog</h3>
 
   <ul class="list-unstyled">
 
-    {{#each self.since}}
+    {{#each item.since}}
       <li>{{version}}{{#if description}} &mdash; {{{description}}}{{/if}}</li>
     {{/each}}
     

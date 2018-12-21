@@ -1,11 +1,11 @@
-{{#if (gt self.author.length 0)}}
+{{#if (gt item.author.length 0)}}
 
   <h3 class="item__sub-heading">
-    Author{{#if (gt self.author.length 1)}}s{{/if}}
+    Author{{#if (gt item.author.length 1)}}s{{/if}}
   </h3>
 
   <ul class="list-unstyled">
-    {{#each self.author}}
+    {{#each item.author}}
       <li>{{{.}}}</li>
     {{/each}}
   </ul>

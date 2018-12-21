@@ -1,90 +1,117 @@
 {{! Placeholders}}
-{{#if (eq self.context.type 'placeholder')}}
+{{#if (eq context.type 'placeholder')}}
 
-<div class="item__code-wrapper">
-  
-  <pre class="item__code item__code--togglable language-scss"
-    data-current-state="collapsed"
-    data-expanded="%{{self.context.name}} { {{self.context.code}} }"
-    data-collapsed="%{{self.context.name}} { ... }"><code class="js-autoindent">%{{self.context.name}} { ... }</code></pre>
+  <div class="item__code-wrapper">
 
-  {{#if @root.basePath}}
-    <a href="{{@root.basePath}}/{{self.file.path}}#L{{self.context.line.start}}-L{{self.context.line.end}}" 
-       class="item__source-link" 
-       target="_blank">
-      View source
-    </a>
-  {{/if}}
-  
-</div>
+    <pre class="item__code item__code--togglable language-scss"
+        data-current-state="collapsed"
+        data-expanded="%{{context.name}} { {{context.code}} }"
+        data-collapsed="%{{context.name}} { ... }">{{!--
+      --}}<code class="js-autoindent">{{!--
+        --}}%{{context.name}} { ... }{{!--
+      --}}</code>{{!--
+    --}}</pre>
+
+    {{#if @root.basePath}}
+      <a href="{{@root.basePath}}/{{file.path}}#L{{context.line.start}}-L{{context.line.end}}" 
+         class="item__source-link" 
+         target="_blank">
+        View source
+      </a>
+    {{/if}}
+
+  </div>
 
 {{! Variables}}
-{{else if (eq self.context.type 'variable')}}
+{{else if (eq context.type 'variable')}}
 
-<div class="item__code-wrapper">
-  <pre class="item__code language-scss"><code class="js-autoindent">${{self.context.name}}: {{self.context.value}}{{#isnt self.context.scope 'private'}} !{{self.context.scope}}{{/isnt}};</code></pre>
+  <div class="item__code-wrapper">
+    
+    <pre class="item__code language-scss">{{!--
+      --}}<code class="js-autoindent">{{!--
+        --}}${{context.name}}: {{context.value}}{{#isnt context.scope 'private'}} !{{context.scope}}{{/isnt}};{{!--
+      --}}</code>{{!--
+    --}}</pre>
 
-  {{#and (gt (indexOf (lowercase self.context.type) 'color') -1) (chroma self.resolvedValue 'isColor')}}
-    <span class="color-preview--block" style="background: {{self.resolvedValue}};"></span>
-  {{/and}}
+    {{#and (gt (indexOf (lowercase context.type) 'color') -1) (chroma resolvedValue 'isColor')}}
+    
+      <span class="color-preview--block" style="background: {{resolvedValue}};"></span>
+    
+    {{/and}}
 
-  {{#if @root.basePath}}
-    <a href="{{@root.basePath}}/{{self.file.path}}#L{{self.context.line.start}}-L{{self.context.line.end }}" 
-       class="item__source-link" 
-       target="_blank">
-      View source
-    </a>
-  {{/if}}
-  
-</div>
+    {{#if @root.basePath}}
+    
+      <a href="{{@root.basePath}}/{{file.path}}#L{{context.line.start}}-L{{context.line.end }}" 
+         class="item__source-link" 
+         target="_blank">
+        View source
+      </a>
+    
+    {{/if}}
+
+  </div>
 
 {{! Vanilla CSS}}
-{{else if (eq self.context.type 'css')}}
+{{else if (eq context.type 'css')}}
 
-<div class="item__code-wrapper">
-  <pre class="item__code item__code--togglable language-scss"
-    data-current-state="collapsed"
-    data-expanded="<code>{{self.context.name}} {
-  {{self.context.value}}
-}</code>"
-    data-collapsed="{{self.context.name}} { ... }"><code class="js-autoindent">{{self.context.name}} { ... }</code></pre>
-</div>
+  <div class="item__code-wrapper">
+    
+    <pre class="item__code item__code--togglable language-scss"
+         data-current-state="collapsed"
+         data-expanded="<code>{{context.name}} {
+    {{context.value}}
+  }</code>"
+         data-collapsed="{{context.name}} { ... }">{{!--
+      --}}<code class="js-autoindent">{{context.name}} { ... }</code>{{!--
+    --}}</pre>
+    
+  </div>
 
 {{! Functions and Mixins}}
 {{else}}
 
-{{set 'parameterString' '' self}}
-{{#each self.parameter}}
-  {{set 'parameterValue' (concat '$' name) ../self}}
-  {{#if default}}
-    {{set 'parameterValue' (concat ../self.parameterValue ': ' default) ../self}}
-  {{/if}}
-  {{#if (eq (lowercase type) 'arglist')}}
-    {{set 'parameterValue' (concat ../self.parameterValue '...') ../self}}
-  {{/if}}
-  {{#if @first}}
-    {{set 'parameterString' ../self.parameterValue ../self}}
-  {{else}}
-    {{set 'parameterString' (concat ../self.parameterString ', ' ../self.parameterValue) ../self}}
-  {{/if}}
-{{/each}}
-{{unset 'parameterValue' self}}
+  {{set 'parameterString' '' this}}
 
-<div class="item__code-wrapper">
-  <pre class="item__code  item__code--togglable language-scss"
-    data-current-state="collapsed"
-    data-expanded="@{{self.context.type}} {{self.context.name}}({{self.parameterString}}) { {{self.context.code}} }"
-    data-collapsed="@{{self.context.type}} {{self.context.name}}({{self.parameterString}}) { ... }"><code class="js-autoindent">@{{self.context.type}} {{self.context.name}}({{self.parameterString}}) { ... }</code></pre>
+  {{#each parameter}}
+    {{set 'parameterValue' (concat '$' name) ../.}}
+    {{#if default}}
+      {{set 'parameterValue' (concat ../parameterValue ': ' default) ../.}}
+    {{/if}}
+    {{#if (eq (lowercase type) 'arglist')}}
+      {{set 'parameterValue' (concat ../parameterValue '...') ../.}}
+    {{/if}}
+    {{#if @first}}
+      {{set 'parameterString' ../parameterValue ../.}}
+    {{else}}
+      {{set 'parameterString' (concat ../parameterString ', ' ../parameterValue) ../.}}
+    {{/if}}
+  {{/each}}
 
-  {{#if @root.basePath}}
-    <a href="{{@root.basePath}}/{{self.file.path}}#L{{self.context.line.start}}-L{{self.context.line.end}}" 
-       class="item__source-link" 
-       target="_blank">
-      View source
-    </a>
-  {{/if}}
-</div>
+  {{unset 'parameterValue' this}}
 
-{{unset 'parameterString' self}}
+  <div class="item__code-wrapper">
+    
+    <pre class="item__code  item__code--togglable language-scss"
+         data-current-state="collapsed"
+         data-expanded="@{{type}} {{context.name}}({{parameterString}}) { {{context.code}} }"
+         data-collapsed="@{{type}} {{context.name}}({{parameterString}}) { ... }">{{!--
+      --}}<code class="js-autoindent">{{!--
+        --}}@{{type}} {{context.name}}({{parameterString}}) { ... }{{!--
+      --}}</code>{{!--
+    --}}</pre>
+
+    {{#if @root.basePath}}
+    
+      <a href="{{@root.basePath}}/{{file.path}}#L{{context.line.start}}-L{{context.line.end}}" 
+         class="item__source-link" 
+         target="_blank">
+        View source
+      </a>
+    
+    {{/if}}
+    
+  </div>
+
+  {{unset 'parameterString' this}}
 
 {{/if}}

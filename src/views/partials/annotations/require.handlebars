@@ -1,13 +1,13 @@
-{{set 'titleDisplayed' false self}}
-{{set 'rootDisplay' self.[@root].display self}}
+{{set 'titleDisplayed' false item}}
+{{set 'rootDisplay' item.[@root].display item}}
 
-{{#each self.require}}
+{{#each item.require}}
 
-  {{#if (and (gt (indexOf ../self.rootDisplay.access item.access) -1) (or (not (and (not ../self.rootDisplay.alias) item.alias)) external))}}
+  {{#if (and (gt (indexOf ../item.rootDisplay.access item.access) -1) (or (not (and (not ../item.rootDisplay.alias) item.alias)) external))}}
 
-    {{#if (not ../self.titleDisplayed)}}
+    {{#if (not ../item.titleDisplayed)}}
 
-      {{set 'titleDisplayed' true ../self}}
+      {{set 'titleDisplayed' true ../item}}
 
       <h3 class="item__sub-heading">Requires</h3>
       <ul class="list-unstyled">
@@ -52,9 +52,9 @@
 
 {{/each}}
 
-{{#if self.titleDisplayed}}
+{{#if item.titleDisplayed}}
   </ul>
 {{/if}}
 
-{{unset 'titleDisplayed' self}}
-{{unset 'rootDisplay' self}}
+{{unset 'titleDisplayed' item}}
+{{unset 'rootDisplay' item}}

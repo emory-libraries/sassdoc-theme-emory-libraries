@@ -1,9 +1,9 @@
-{{#if (gt self.link.length 0)}}
+{{#if (gt item.link.length 0)}}
 
   <h3 class="item__sub-heading">Links</h3>
 
   <ul class="list-unstyled">
-    {{#each self.link}}
+    {{#each item.link}}
       <li>
         <a href="{{url}}">
           {{#if caption}}

@@ -182,7 +182,7 @@ var config = {
     },
     js: {
       files: ['<%= dir.src.js %>/**/*.js'],
-      tasks: ['jshint', 'babel', 'copy:js']
+      tasks: [/*'jshint', */'babel', 'copy:dependencies', 'copy:js']
     },
     template: {
       files: ['<%= dir.src.template %>/**/*.handlebars'],
@@ -273,22 +273,18 @@ var config = {
       files: [{
         expand: true,
         cwd: '<%= dir.src.js %>',
-        src: ['**/*.js'],
+        src: ['*.js'],
         dest: '<%= dir.dist.js %>'
       }]
     }
   },
   
   jshint: {
-    options: {
-      jshintrc: true
-    },
     dev: {
-      files: [{
-        expand: true,
-        cwd: '<%= dir.src.js %>',
-        src: ['**/*.js']
-      }]
+      options: {
+        jshintrc: true
+      },
+      src: ['<%= dir.src.js %>/*.js', '!<%= dir.src.js %>/dependencies/*.js']
     }
   },
   
@@ -299,6 +295,14 @@ var config = {
   },
   
   copy: {
+    dependencies: {
+      files: [{
+        expand: true,
+        cwd: '<%= dir.src.js %>',
+        src: ['dependencies/**/*.js'],
+        dest: '<%= dir.dist.js %>'
+      }]
+    },
     js: {
       files: dir.projects.reduce((files, project) => {
         
@@ -448,10 +452,12 @@ module.exports = function (grunt) {
     'replace:dev',
     'dart-sass:dev',
     'postcss',
+    'copy:dependencies',
     'babel',
     'svgmin',
     'imagemin',
-    'copy',
+    'copy:js',
+    'copy:css',
     'sassdoc'
   ]);
   
@@ -462,13 +468,15 @@ module.exports = function (grunt) {
     'dart-sass:dist',
     'postcss',
     'cssmin',
+    'copy:dependencies',
     'babel',
     'uglify',
     'svgmin',
     'imagemin',
     'clean:unminjs',
     'clean:unmincss',
-    'copy',
+    'copy:js',
+    'copy:css',
     'sassdoc'
   ]);
   

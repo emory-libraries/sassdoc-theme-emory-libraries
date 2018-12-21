@@ -1,13 +1,13 @@
-{{set 'titleDisplayed' false self}}
-{{set 'rootDisplay' self.[@root].display self}}
+{{set 'titleDisplayed' false item}}
+{{set 'rootDisplay' item.[@root].display item}}
 
-{{#each self.usedBy}}
+{{#each item.usedBy}}
 
-  {{#if (and (gt (indexOf ../self.rootDisplay.access access) -1) (not (and (not ../self.rootDisplay.alias) alias)))}}
+  {{#if (and (gt (indexOf ../item.rootDisplay.access access) -1) (not (and (not ../item.rootDisplay.alias) alias)))}}
 
-    {{#if (not ../self.titleDisplayed)}}
+    {{#if (not ../item.titleDisplayed)}}
 
-      {{set 'titleDisplayed' true ../self}}
+      {{set 'titleDisplayed' true ../item}}
 
       <h3 class="item__sub-heading">Used by</h3>
       <ul class="list-unstyled">
@@ -25,9 +25,9 @@
 
 {{/each}}
 
-{{#if self.titleDisplayed}}
+{{#if item.titleDisplayed}}
   </ul>
 {{/if}}
 
-{{unset 'titleDisplayed' self}}
-{{unset 'rootDisplay' self}}
+{{unset 'titleDisplayed' item}}
+{{unset 'rootDisplay' item}}
