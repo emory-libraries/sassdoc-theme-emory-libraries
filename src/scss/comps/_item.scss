@@ -16,16 +16,11 @@
     font-weight: 300;
     float: left;
     transition: .2s ease;
-    
-    &:hover,
-    &:focus {
-      color: $color-item-heading-hover;
-    }
-    
   };
   
   @include e('name') { 
     color: inherit; 
+    
   };
 
   @include e('example') { 
@@ -157,6 +152,24 @@
     
   };
   
+  @include e('status') {
+    padding: .25rem .5rem;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border-radius: 3px;
+    color: $color-item-status;
+    text-shadow: 1px 1px 3px $color-item-status-shadow;
+    
+    @each $status, $color in config('status') {
+      
+      @include m($status) {
+        background-color: $color;
+      };
+      
+    }
+    
+  };
+  
   @include e('access') {
     text-transform: capitalize;
     color: $color-item-access;
@@ -179,9 +192,12 @@
   };
   
   @include e('cross-type') {
-    color: $color-item-cross-type;
+    background-color: $color-item-cross-type-background;
+    color: $color-item-cross-type-foreground;
+    padding: .5em 1em;
     font-family: font('code');
     font-size: 0.8em;
+    border-radius: 3px;
   };
   
   @include e('description') {

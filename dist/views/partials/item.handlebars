@@ -13,7 +13,7 @@
   
     {{#forIn context.typeOfAnnotations}}
   
-      {{> (combine 'annotations/' .) item=../.}}
+      {{> (combine 'annotations/' .) item=../. group=../group type=../type id=../id}}
   
     {{/forIn}}
   

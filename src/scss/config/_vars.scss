@@ -7,6 +7,15 @@ $config: (
   
   'rhythm': (
     'vertical': 1.5rem
+  ),
+  
+  'status': (
+    'specification': #708090,
+    'construction': #F2C900,
+    'review': #FFAB4A,
+    'complete': #61BD4F,
+    'reconsideration': #0079BF,
+    'deprecated': #EB5A46
   )
   
 );

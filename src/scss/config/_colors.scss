@@ -45,6 +45,7 @@ $color-text-light: color('white');
 $brandy-dark-text: $color-text-dark;
 $brandy-light-text: $color-text-light;
 
+
 $color-link-default: color('blue', 'bright');
 $color-link-hover: color('blue', 'mid');
 
@@ -80,9 +81,12 @@ $color-item-type: color('slate');
 $color-item-alias: color('gold');
 $color-item-access: color('blue', 'dark');
 $color-item-since: color('slate');
+$color-item-status: color('white');
+$color-item-status-shadow: rgba(color('black'), .15);
 $color-item-source-link-background: color('white');
 $color-item-source-link-foreground: shade(color('slate'), 25%);
-$color-item-cross-type: color('blue');
+$color-item-cross-type-background: color('blue');
+$color-item-cross-type-foreground: color-contrast($color-item-cross-type-background);
 $color-item-preview-inline-border: $color-table-border; 
 $color-item-preview-block-border: $color-table-border; 
 $color-item-example-background: color('blue', 'light');
