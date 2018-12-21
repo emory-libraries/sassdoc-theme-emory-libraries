@@ -6,7 +6,7 @@
     {{#is item.type '*'}}
       Any
     {{else}}
-      <code>{{join (map (split item.type '|') trim) '</code> or <code>'}}</code>
+      <code>{{{join (map (split item.type '|') trim) '</code> or <code>'}}}</code>
     {{/is}}
   </p>
 

@@ -7,7 +7,7 @@
     {{#is item.return.type '*'}}
       Any type
     {{else}}
-      <code>{{join (map (split item.return.typ '|') trim) '</code> or <code>'}}</code>
+      <code>{{{join (map (split item.return.typ '|') trim) '</code> or <code>'}}}</code>
     {{/is}}
     
     {{#if item.return.description}} &mdash; {{{item.return.description}}}{{/if}}

@@ -758,11 +758,11 @@ pre[class*=language-] {
   width: 100%;
   margin-bottom: 1em;
   border-collapse: collapse;
+  border: 1px solid #adb0b5;
 }
 .item__parameters thead th {
   vertical-align: bottom;
   border-bottom: 1px solid #adb0b5;
-  border-top: none;
   text-align: left;
   background-color: #091C44;
   color: #E9BF55;
@@ -772,14 +772,14 @@ pre[class*=language-] {
 }
 .item__parameters td,
 .item__parameters th {
-  padding: 0.5em 0.5em 0.5em 0;
+  padding: 0.5em 1em;
   vertical-align: top;
 }
-@media (min-width: 801px) {
-  .item__parameters td,
-.item__parameters th {
-    border-top: 1px solid #adb0b5;
-  }
+.item__parameters tbody tr {
+  border-bottom: 1px solid #adb0b5;
+}
+.item__parameters tbody tr:last-of-type {
+  border-bottom: 0;
 }
 .item__access {
   text-transform: capitalize;

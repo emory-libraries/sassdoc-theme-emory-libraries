@@ -19,7 +19,7 @@
         <th scope="row" data-label="name"><code>{{name}}</code></th>
         <td data-label="desc">{{{default description '&mdash;<span class="visually-hidden"> none</span>'}}}</td>
         <td data-label="type">
-          <code>{{join (map (split type '|') trim) '</code> or <code>'}}</code>
+          <code>{{{join (map (split type '|') trim) '</code> or <code>'}}}</code>
         </td>
         <td data-label="default">
           {{#if (not default)}}
