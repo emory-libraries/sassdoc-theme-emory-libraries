@@ -1,0 +1,37 @@
+{{set 'hasContent' false data}}
+
+{{#each data as |items type|}}
+
+  {{#if (eq (typeOf items) 'array')}}
+
+    {{set 'hasContent' true ../data}}
+
+  {{/if}}
+
+{{/each}}
+
+<section class="main__section main__section--level-{{level}} {{#if data.hasContent}}main__section--has-content{{/if}}">
+
+  <h{{level}} class="main__heading" id="{{group}}">
+    
+    <div class="container">{{lookup @root.groups id}}</div>
+    
+  </h{{level}}>
+  
+  {{#each (unpick 'hasContent' data) as |items type|}}
+  
+    {{#if ../data.hasContent}}
+  
+      {{> content-subsection group=../group type=type items=items level=../level}}
+  
+    {{else}}
+  
+      {{> content-section level=(plus ../level 1) id=type group=(combine ../group '.' type) data=items}}
+  
+    {{/if}}
+  
+  {{/each}}
+
+</section>
+
+{{unset 'hasContent' data}}

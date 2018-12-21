@@ -6,8 +6,11 @@
 
 {{else}}
 
-{{#each _data.byGroupAndType }}
+{{#each _data.byGroupAndType as |data group|}}
 
+  {{> content-section level=1 id=group group=group data=data}}
+
+  {{!--
   {{set 'groupLayers' (split (removeFromBeginning @key (combine @root.namespace '.')) '.') this}}
   
   {{#each groupLayers as |groupLayer|}}
@@ -46,6 +49,7 @@
   {{/each}}
 
   {{unset 'groupLayers' this}}
+  --}}
 
 {{/each}}
 

@@ -1,0 +1,15 @@
+<section class="main__sub-section" id="{{group}}-{{type}}">
+  
+  <h{{plus level 1}} class="main__heading--secondary">
+    
+    <div class="container">{{type}}s</div>
+    
+  </h{{plus level 1}}>
+  
+  {{#each items as |item|}}
+  
+    {{> item self=item}}
+  
+  {{/each}}
+  
+</section>
