@@ -8,31 +8,44 @@
 
 {{#each _data.byGroupAndType }}
 
-  <section class="main__section">
-    <h1 class="main__heading" id="{{lookup @root.groups @key}}">
-      <div class="container">
-        {{lookup @root.groups @key}}
-      </div>
-    </h1>
-    
-    {{#each this}}
-      {{#if (gt this.length 0)}} 
-        <section class="main__sub-section" id="{{@../key}}-{{@key}}">
-          <h2 class="main__heading--secondary">
-            <div class="container">
-              {{@key}}s
-            </div>
-          </h2>
+  {{set 'groupLayers' (split (removeFromBeginning @key (combine @root.namespace '.')) '.') this}}
+  
+  {{#each groupLayers as |groupLayer|}}
 
-          {{#each this}}
-            {{> item self=this parent=../.}}
-          {{/each}}
-        </section>
-      {{/if}}
-    
-    {{/each}}
+    <section class="main__section">
+      <h1 class="main__heading" id="{{lookup @root.groups groupLayer}}">
+        <div class="container">
+          {{lookup @root.groups groupLayer}}
+        </div>
+      </h1>
 
-  </section>
+      {{#each (unpick 'groupLayers' ..) as |items type|}}
+      
+        {{#if (gt this.length 0)}} 
+      
+          <section class="main__sub-section" id="{{@../../key}}-{{type}}">
+            
+            <h2 class="main__heading--secondary">
+              <div class="container">
+                {{type}}s
+              </div>
+            </h2>
+
+            {{#each items as |item|}}
+              {{> item self=item parent=../../../.}}
+            {{/each}}
+            
+          </section>
+      
+        {{/if}}
+
+      {{/each}}
+
+    </section>
+
+  {{/each}}
+
+  {{unset 'groupLayers' this}}
 
 {{/each}}
 

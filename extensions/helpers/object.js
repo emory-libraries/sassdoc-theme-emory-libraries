@@ -2,6 +2,7 @@
  * Load utilities.
  */
 const extend = require('extend');
+const flatten = require('flat');
 
 /**
  * Initialize object methods for use as handlebar helpers.
@@ -44,6 +45,10 @@ module.exports = {
     // Otherwise, return the result.
     return result;
     
-  }
+  },
+  
+  flatten: ( obj ) => flatten(obj),
+  
+  expand: ( obj ) => flatten.unflatten(obj)
   
 };

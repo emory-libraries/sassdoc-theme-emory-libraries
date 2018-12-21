@@ -37,57 +37,9 @@
   
     <button type="button" class="btn-toggle  js-btn-toggle" data-alt="Open all">Close all</button>
 
-    {{#each _data.byGroupAndType}}
+    {{#each _data.byGroupAndType as |data group|}}
   
-      {{set 'groupLayers' (split (removeFromBeginning @key (combine @root.namespace '.')) '.') this}}
-  
-      {{#each groupLayers as |groupLayer|}}
-  
-        <div class="sidebar__group sidebar__group--level-{{plus @index 1}}">
-  
-          <p class="sidebar__item sidebar__item--heading" data-slug="{{@../key}}">
-            <a href="#{{@../key}}">{{lookup @root.groups groupLayer}}</a>
-          </p>
-          
-          <div>
-          
-            {{#each (unpick 'groupLayers' ..) as |items type|}}
-
-              {{#if (gt items.length 0)}}
-
-                <p class="sidebar__item sidebar__item--sub-heading" data-slug="{{@../../key}}-{{type}}">
-                  <a href="#{{@../../key}}-{{type}}">{{type}}s</a>
-                </p>
-
-                <ul class="list-unstyled">
-
-                  {{#each items}}
-
-                    <li class="sidebar__item sassdoc__item" data-group="{{@../../../key}}" data-name="{{context.name}}" data-type="{{context.type}}">
-
-                      <a href="#{{@../../../key}}-{{context.type}}-{{context.name}}">
-                        {{context.name}}
-                        {{#if (eq access.[0] "private")}}<span class="sidebar__annotation sidebar__annotation--private">private</span>{{/if}}
-                        {{#if alias}}<span class="sidebar__annotation sidebar__annotation--alias">alias</span>{{/if}}
-                      </a>
-
-                    </li>
-
-                {{/each}}
-
-                </ul>
-
-              {{/if}}
-
-            {{/each}}
-          
-          </div>
-          
-        </div>
-  
-      {{/each}} 
-  
-      {{unset 'groupLayers' this}}
+      {{> sidebar-group level=1 id=group group=group data=data}}
 
     {{/each}}
   

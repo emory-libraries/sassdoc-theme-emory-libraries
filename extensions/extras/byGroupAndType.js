@@ -71,7 +71,8 @@ module.exports = function byGroupAndType (items, ctx) {
     utils.sort(sorted, item, group, type);
     
   });
-
+  
+  // Return sorted.
   return sorted;
   
 };

@@ -77,7 +77,7 @@ const extras = require('sassdoc-extras');
 fs.readdirSyncRecursive(path.join(__dirname, dir.extras)).forEach((extra) => {
   
   const ext = path.extname(extra);
-  const name = path.basename(extra, `.${ext}`);
+  const name = path.basename(extra, ext);
   
   extras[name] = require(path.join(__dirname, dir.extras, extra));
   
@@ -153,7 +153,7 @@ module.exports = function (dest, ctx) {
   const extrasIgnore = ['length', 'name', 'prototype'];
   const extrasNames = Object.getOwnPropertyNames(extras).filter((extra) => !extrasIgnore.includes(extra));
   const extrasLoading = extrasNames.filter((extra) => extra.indexOf('by') !== 0);
-  const extrasProperties = extrasNames.filter((extra) => extra.indexOf('by') === 0);
+  const extrasFilters = extrasNames.filter((extra) => extra.indexOf('by') === 0);
   
   /**
    * Extend SassDoc with SassDoc Extras.
@@ -161,26 +161,11 @@ module.exports = function (dest, ctx) {
   extras(ctx, ...extrasLoading);
 
   /**
-   * Use SassDoc Extra's indexer to index the data by group and type, so we
-   * have the following structure:
-   *
-   *     {
-   *       "group-slug": {
-   *         "function": [...],
-   *         "mixin": [...],
-   *         "variable": [...]
-   *       },
-   *       "another-group": {
-   *         "function": [...],
-   *         "mixin": [...],
-   *         "variable": [...]
-   *       }
-   *     }
-   *
-   * You can then use `data.byGroupAndType` instead of `data` in your
-   * templates to manipulate the indexed object.
+   * Use SassDoc Extra's indexer to index the data in a variety of
+   * ways and then make that available within our data object. This
+   * allows for better manipulation of the data based on our needs.
    */
-  extrasProperties.forEach((extra) => ctx.data[extra] = extras[extra](ctx.data, ctx));
+  extrasFilters.forEach((extra) => ctx.data[extra] = extras[extra](ctx.data, ctx));
 
   /**
    * Avoid key collision with Handlebars default `data`.
