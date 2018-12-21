@@ -72,8 +72,8 @@
 
 /// A shorthand for absolute positioning
 ///
-/// @requires {function} position
-/// @params {list | number} $offset - Some `top`, `right`, `bottom`, and `left` values, respectively
+/// @requires {mixin} position
+/// @param {list | number} $offset - Some `top`, `right`, `bottom`, and `left` values, respectively
 @mixin absolute( $offset ) {
   
   @include position($offset, absolute);
@@ -82,8 +82,8 @@
 
 /// A shorthand for relative positioning
 ///
-/// @requires {function} position
-/// @params {list | number} $offset - Some `top`, `right`, `bottom`, and `left` values, respectively
+/// @requires {mixin} position
+/// @param {list | number} $offset - Some `top`, `right`, `bottom`, and `left` values, respectively
 @mixin relative( $offset ) {
   
   @include position($offset, relative);
@@ -92,8 +92,8 @@
 
 /// A shorthand for fixed positioning
 ///
-/// @requires {function} position
-/// @params {list | number} $offset - Some `top`, `right`, `bottom`, and `left` values, respectively
+/// @requires {mixin} position
+/// @param {list | number} $offset - Some `top`, `right`, `bottom`, and `left` values, respectively
 @mixin fixed( $offset ) {
   
   @include position($offset, fixed);
@@ -123,7 +123,7 @@
   
     @for $i from 1 through length($offset) {
 
-      $value: nth($offset, $i); 
+      $value: nth($offset, $i);
 
       @if( $i == 1 and not is-null($value) and $value != false ) { top: $value; }
       @if( $i == 2 and not is-null($value) and $value != false ) { right: $value; }
@@ -241,26 +241,32 @@
 }
 
 /// Absolutely centers the contents of an element using the flexbox method
-@mixin absolute-center-contents() {
+///
+/// @param {boolean} $inline [false] - Determines whether the element should be a block or inline element
+@mixin absolute-center-contents( $inline: false ) {
   
-  display: flex;
+  @if( $inline == true ) { display: inline-flex; } @else { display: flex; }
   align-items: center;
   justify-content: center;
   
 }
 
-/// Absolutely centers the contents of an element horizontally using the flexbox method
-@mixin absolute-center-contents-x() {
+/// Absolutely centers the contents of an element vertically using the flexbox method
+///
+/// @param {boolean} $inline [false] - Determines whether the element should be a block or inline element
+@mixin absolute-center-contents-y( $inline: false ) {
   
-  display: flex;
+  @if( $inline == true ) { display: inline-flex; } @else { display: flex; }
   align-items: center;
   
 }
 
-/// Absolutely centers the contents of an element vertically using the flexbox method
-@mixin absolute-center-contents-y() {
+/// Absolutely centers the contents of an element horizontally using the flexbox method
+///
+/// @param {boolean} $inline [false] - Determines whether the element should be a block or inline element
+@mixin absolute-center-contents-x( $inline: false ) {
   
-  display: flex;
+  @if( $inline == true ) { display: inline-flex; } @else { display: flex; }
   justify-content: center;
   
 }

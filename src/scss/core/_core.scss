@@ -1,4 +1,6 @@
-*, *::after, *::before {
+*, 
+*::after,
+*::before {
   position: relative;
   box-sizing: border-box;
 }
@@ -6,6 +8,7 @@
 body { 
   font-size: 14px;
   font-family: font('body');
+  color: $color-text-dark;
   margin: 0;
   line-height: 1.5;
 }
@@ -13,15 +16,20 @@ body {
 a {
   transition: .15s;
   text-decoration: none;
-  color: color('maroon');
+  color: $color-link-default;
   
   &:hover {
-    &, code { color: color('black'); }
+    &, 
+    code { 
+      color: $color-link-hover; 
+    }
   }
   
 }
 
-table p { margin: 0 0 (config('rhythm.vertical') / 3); }
+table p { 
+  margin: 0 0 (config('rhythm.vertical') / 3); 
+}
 
 pre {
   direction: ltr;
@@ -41,25 +49,40 @@ code {
   font-family: font('code');
   
   @include when-child-of(':not(pre)') { 
-    color: color('purple', 'light');
+    color: $color-code-inline;
     white-space: nowrap;
     font-weight: normal;
   };
   
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: font('heading'); }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 { 
+  font-family: font('heading'); 
+}
 
 @include small {
   
-  table, tbody, tr, td, th { display: block; }
+  table, 
+  tbody, 
+  tr, 
+  td, 
+  th { 
+    display: block; 
+  }
   
-  thead { @include visually-hidden; }
+  thead { 
+    @include visually-hidden; 
+  }
   
   tr {
     padding-bottom: 1em;
     margin-bottom: 1em;
-    border-bottom: 2px solid color('grey');
+    border-bottom: 2px solid $color-table-border;
   }
   
   td, th {

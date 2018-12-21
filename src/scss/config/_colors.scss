@@ -1,37 +1,113 @@
 $colors: (
   
-  'maroon': (
-    base: #2D1214
+  'blue': (
+    'dark': #091C44,
+    'base': #082B73,
+    'mid': #004990,
+    'bright': (
+      'base': #5387F7,
+      'accessible': #336BE6
+    ),
+    'light': #D0DEFD
   ),
   
-  'blush': (
-    base: #E4BCBA
+  'gold': (
+    'base': #E9BF55
   ),
   
-  'white': (
-    base: #FFFFFF,
-    dark: #EBEBEB
+  'charcoal': (
+    'base': #605858
   ),
   
-  'purple': (
-    light: #6C6A74,
-    base: #36333D
+  'slate': (
+    'base': #B6BDCC,
+    'light': #E7EAF1
   ),
   
   'black': (
-    base: #000000,
-    light: #333333
+    'base': #000000
   ),
   
-  'grey': (
-    light: #E0E0E0,
-    base: #DDDDDD,
-    dark: #888888,
-    darker: #555555
+  'white': (
+    'base': #FFFFFF
   )
   
 );
 
+
 $brandy-colors-map: $colors;
-$brandy-dark-text: color('black', 'light');
-$brandy-light-text: color('white');
+
+
+$color-text-dark: color('charcoal');
+$color-text-light: color('white');
+
+
+$brandy-dark-text: $color-text-dark;
+$brandy-light-text: $color-text-light;
+
+$color-link-default: color('blue', 'bright');
+$color-link-hover: color('blue', 'mid');
+
+$color-code-inline: color('blue');
+
+$color-layout-toggle: color('white');
+
+$color-table-border: shade(color('slate', 'light'), 25%);
+
+$color-content-background: tint(color('slate', 'light'), 75%);
+$color-content-border: rgba(color('blue'), .2);
+$color-content-section-heading-background: color('blue', 'light');
+$color-content-section-heading-foreground: color('blue');
+$color-content-section-border: rgba(color('blue', 'dark'), .2);
+$color-content-subsection-heading: color('blue', 'dark');
+$color-content-subsection-border: color('blue', 'dark');
+
+$color-footer-background: color('slate');
+$color-footer-logo-shadow: rgba(color('black'), .2);
+$color-footer-info-text: tint($color-text-dark, 25%);
+
+$color-header-background: color('blue', 'dark');
+$color-header-foreground: color('gold');
+$color-header-shadow: rgba(color('black'), .2);
+
+$color-item-heading-default: $color-link-default;
+$color-item-heading-hover: $color-link-hover;
+$color-item-subheading: color('blue');
+$color-item-code-toggle: color('slate');
+$color-item-anchor: color('blue', 'mid');
+$color-item-deprecated: darken(red, 10%);
+$color-item-type: color('slate');
+$color-item-alias: color('gold');
+$color-item-access: color('blue', 'dark');
+$color-item-since: color('slate');
+$color-item-source-link-background: color('white');
+$color-item-source-link-foreground: shade(color('slate'), 25%);
+$color-item-cross-type: color('blue');
+$color-item-preview-inline-border: $color-table-border; 
+$color-item-preview-block-border: $color-table-border; 
+$color-item-example-background: color('blue', 'light');
+$color-item-example-foreground: color-contrast($color-item-example-background);
+$color-item-params-border: $color-table-border;
+$color-item-params-heading-background: color('blue', 'dark');
+$color-item-params-heading-foreground: color('gold');
+
+$color-search-background: color('white');
+$color-search-suggestions-background: color('white');
+$color-search-suggestions-border: color('slate', 'light');
+$color-search-suggestions-selected: color('blue', 'light');
+$color-search-suggestions-active: $color-search-suggestions-selected;
+
+$color-sidebar-background: color('white');
+$color-sidebar-active: color('blue', 'light');
+$color-sidebar-shadow: rgba(color('black'), .15);
+$color-sidebar-border: color('slate');
+$color-sidebar-annotation: color('blue');
+$color-sidebar-alias: color('gold');
+$color-sidebar-heading-arrow: color('slate');
+$color-sidebar-subheading: color('blue', 'dark');
+$color-sidebar-description: color('slate', 'light');
+$color-sidebar-toggle-background-default: color('blue', 'bright', 'accessible');
+$color-sidebar-toggle-background-hover: color('blue', 'mid');
+$color-sidebar-toggle-foreground: color('white');
+
+$color-card-background: color('white');

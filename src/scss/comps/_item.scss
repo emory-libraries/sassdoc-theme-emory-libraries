@@ -1,23 +1,36 @@
 @include b('main') {
   
-  @include e('section') { margin-bottom: config('rhythm.vertical') * 3; };
+  @include e('section') { 
+    margin-bottom: config('rhythm.vertical') * 3; 
+  };
   
 };
 
 @include b('item') {
 
   @include e('heading') {
-    color: color('black');
+    color: $color-item-heading-default;
     margin: config('rhythm.vertical') * 3 0 config('rhythm.vertical') 0;
     position: relative;
     font-size: 2em;
     font-weight: 300;
     float: left;
+    transition: .2s ease;
+    
+    &:hover,
+    &:focus {
+      color: $color-item-heading-hover;
+    }
+    
   };
   
-  @include e('name') { color: color('purple', 'light'); };
+  @include e('name') { 
+    color: inherit; 
+  };
 
-  @include e('example') { margin-bottom: config('rhythm.vertical'); };
+  @include e('example') { 
+    margin-bottom: config('rhythm.vertical'); 
+  };
   
   @include e('example', 'code') {
     position: static;
@@ -36,7 +49,7 @@
       &::after {
         @include absolute(null 0 -2.5em);
         opacity: 0;
-        color: darken(color('grey'), 10%);
+        color: $color-item-code-toggle;
         font-size: 0.8em;
         transition: 0.2s ease-out;
       }
@@ -47,8 +60,12 @@
         
       };
 
-      &[data-current-state="expanded"]::after { content: 'Click to collapse.'; }
-      &[data-current-state="collapsed"]::after { content: 'Click to expand.'; }
+      &[data-current-state="expanded"]::after { 
+        content: 'Click to collapse.'; 
+      }
+      &[data-current-state="collapsed"]::after { 
+        content: 'Click to expand.'; 
+      }
       
     };
     
@@ -57,7 +74,7 @@
   @include e('anchor') {
     
     font-size: 0.6em;
-    color: lighten(color('maroon'), 20%);
+    color: $color-item-anchor;
 
     @include medium {
       @include absolute(null 101% 0.25em);
@@ -75,7 +92,7 @@
 
     strong {
       float: left;
-      color: darken(red, 10%);
+      color: $color-item-deprecated;
       text-transform: uppercase;
     }
 
@@ -88,18 +105,18 @@
   };
   
   @include e('type') {
-    color: color('grey');
+    color: $color-item-type;
     text-transform: capitalize;
     font-size: 0.75em;
   };
   
   @include e('alias', 'aliased') {
-    color: color('blush');
+    color: $color-item-alias;
     font-size: 0.8em;
   };
   
   @include e('sub-heading') {
-    color: shade(color('blush'), 50%);
+    color: $color-item-subheading;
     margin-top: 0;
     margin-bottom: config('rhythm.vertical');
     font-size: 1.2em;
@@ -112,19 +129,25 @@
 
     thead th {
       vertical-align: bottom;
-      border-bottom: 2px solid color('grey');
+      border-bottom: 1px solid $color-item-params-border;
       border-top: none;
       text-align: left;
-      color: mix(color('black'), color('white'), 70%);
+      background-color: $color-item-params-heading-background;
+      color: $color-item-params-heading-foreground;
     }
 
-    tbody th { text-align: left; }
+    tbody th { 
+      text-align: left; 
+    }
 
-    td, th {
+    td, 
+    th {
       padding: 0.5em 0.5em 0.5em 0;
       vertical-align: top;
       
-      @include medium { border-top: 1px solid color('grey'); };
+      @include medium { 
+        border-top: 1px solid $color-item-params-border;
+      };
       
     }
     
@@ -132,27 +155,27 @@
   
   @include e('access') {
     text-transform: capitalize;
-    color: color('purple');
+    color: $color-item-access;
     font-size: 0.8em;
   };
   
   @include e('since') {
     float: right;
     padding-top: 0.9em;
-    color: darken(color('grey'), 10%);
+    color: $color-item-since;
     margin-bottom: 1em;
   };
   
   @include e('source-link') {
     @include absolute(1px 1px);
-    background: color('white');
+    background: $color-item-source-link-background;
     padding: 1em;
     z-index: z('default') + 1;
-    color: darken(color('grey'), 10%);
+    color: $color-item-source-link-foreground;
   };
   
   @include e('cross-type') {
-    color: lighten(color('black'), 10%);
+    color: $color-item-cross-type;
     font-family: font('code');
     font-size: 0.8em;
   };
@@ -160,7 +183,9 @@
   @include e('description') {
     margin-bottom: config('rhythm.vertical');
     
-    &li { margin-bottom: 0; }
+    &li { 
+      margin-bottom: 0; 
+    }
     
     @include m('inline') {
       
@@ -183,7 +208,7 @@
     
     @include m('inline') {
       padding: 2px 4px;
-      border: 1px solid rgba(color('black'), 0.1);
+      border: 1px solid $color-item-preview-inline-border;
       border-radius: 3px;
     };
     
@@ -191,7 +216,7 @@
       @include size(2em);
       @include absolute(140% 0);
       top: calc(100% + 20px);
-      border: 1px solid rgba(color('black'), 0.1);
+      border: 1px solid $color-item-preview-block-border;
       border-radius: 3px;
     };
     
@@ -207,7 +232,9 @@
 
       @include e('paramater') {
 
-        &:first-of-type > td { border-top: none; }
+        &:first-of-type > td {
+          border-top: none;
+        }
 
       };
 
@@ -222,11 +249,9 @@
   
   @include e('description') {
     
-    $background: color('blush');
-    
     padding: 1em;
-    background: $background;
-    color: color-contrast($background);
+    background: $color-item-example-background;
+    color: $color-item-example-foreground;
 
     p { margin: 0; }
     
@@ -234,7 +259,9 @@
   
   @include e('code') {
     
-    &[class*="language-"] { margin: 0; }
+    &[class*="language-"] { 
+      margin: 0; 
+    }
     
   };
   

@@ -381,7 +381,7 @@
 /// Targets an element when it's an immediate child of another element
 ///
 /// @author Hugo Giraudel
-/// @params {string | list} $context - Some parent element context
+/// @param {string | list} $context - Some parent element context
 @mixin when-child-of( $context ) {
   
   #{unquote($context)} > & { @content; }
@@ -391,7 +391,7 @@
 /// Targets an element when it's an adjacent sibling of another element
 ///
 /// @author Hugo Giraudel
-/// @params {string | list} $context - Some adjacent sibling element context
+/// @param {string | list} $context - Some adjacent sibling element context
 @mixin when-adjacent-sibling-of( $context ) {
   
   #{unquote($context)} + & { @content; }
@@ -401,7 +401,7 @@
 /// Targets an element when it's a general sibling of another element
 ///
 /// @author Hugo Giraudel
-/// @params {string | list} $context - Some sibling element context
+/// @param {string | list} $context - Some sibling element context
 @mixin when-sibling-of( $context ) {
   
   #{unquote($context)} ~ & { @content; }
@@ -411,7 +411,7 @@
 /// Targets an element when it's a descendant of another element
 ///
 /// @author Hugo Giraudel
-/// @params {string | list} $context - Some ascendant element context
+/// @param {string | list} $context - Some ascendant element context
 @mixin when-descendant-of( $context ) {
   
   #{unquote($context)} & { @content; }

@@ -5,7 +5,7 @@
     @include absolute(8px null null 20px);
     font-size: 2em;
     cursor: pointer;
-    color: color('white');
+    color: $color-layout-toggle;
     display: block;
   };
   
@@ -15,11 +15,17 @@
   
   @include medium {
     
-    .sidebar { transform: translatex( -#{config('sidebar.width')} ) translatez(0); }
+    .sidebar { 
+      transform: translatex( -#{config('sidebar.width')} ) translatez(0); 
+    }
 
-    .main { padding-left: 0; }
+    .main { 
+      padding-left: 0; 
+    }
 	
-	.header { left: 0; }
+	.header { 
+      left: 0; 
+    }
     
   };
   

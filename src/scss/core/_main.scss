@@ -1,5 +1,5 @@
 @include b('main') {
-  background: color('white', 'dark');
+  background: $color-content-background;
   position: relative;
 
   @include medium {
@@ -11,7 +11,7 @@
   
   @include e('section') {
     margin-top: 5em;
-    border-top: 5px solid rgba(color('purple'), .2);
+    border-top: 5px solid $color-content-border;
     
     @include when-adjacent-sibling-of('.header') { 
       margin-top: 0;
@@ -30,12 +30,12 @@
   
   @include e('heading') {
     $size: 3.5em;
-    $background: color('blush');
+    $background: $color-content-section-heading-background;
     @extend %heading;
-    color: color('purple');
+    color: $color-content-section-heading-foreground;
     font-size: $size;
     text-align: center;
-    border-bottom: 5px solid rgba(color('purple'), .2);
+    border-bottom: 5px solid $color-content-section-border;
     padding-bottom: .5em;
     margin-bottom: 1em;
     background: $background;
@@ -64,7 +64,7 @@
     @include m('secondary') { 
       @extend %heading; 
       font-size: 3em;
-      color: color('maroon');
+      color: $color-content-subsection-heading;
       text-transform: uppercase;
       font-weight: bold;
       padding-top: 0;
@@ -82,7 +82,7 @@
         @include absolute(null 0 .15em 0);
         position: absolute;
         height: .2em;
-        background-color: color('maroon');
+        background-color: $color-content-subsection-border;
       }
       
     };
