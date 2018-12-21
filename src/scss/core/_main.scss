@@ -29,14 +29,37 @@
   }
   
   @include e('heading') {
+    $size: 3.5em;
+    $background: color('blush');
     @extend %heading;
     color: color('purple');
-    font-size: 3.5em;
+    font-size: $size;
     text-align: center;
     border-bottom: 5px solid rgba(color('purple'), .2);
     padding-bottom: .5em;
     margin-bottom: 1em;
-    background: color('blush');
+    background: $background;
+    
+    $levels: 5;
+    $resize: .25em;
+    $recolor: (100% / $levels);
+    
+    @for $level from 2 through $levels {
+      
+      $text: $size - ($level * $resize);
+      $color: tint($background, ($level * $recolor));
+      
+      @include when-child-of('.main__section--level-#{$level}') {
+        text-align: left;
+        font-size: $text;
+        background: $color;
+        padding-top: .5em;
+        
+        @include medium { padding-top: 1.5em; }
+        
+      };
+      
+    }
     
     @include m('secondary') { 
       @extend %heading; 

@@ -310,6 +310,50 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1em;
   background: #E4BCBA;
 }
+.main__section--level-2 > .main__heading {
+  text-align: left;
+  font-size: 3em;
+  background: #efd7d6;
+  padding-top: 0.5em;
+}
+@media (min-width: 801px) {
+  .main__section--level-2 > .main__heading {
+    padding-top: 1.5em;
+  }
+}
+.main__section--level-3 > .main__heading {
+  text-align: left;
+  font-size: 2.75em;
+  background: #f4e4e3;
+  padding-top: 0.5em;
+}
+@media (min-width: 801px) {
+  .main__section--level-3 > .main__heading {
+    padding-top: 1.5em;
+  }
+}
+.main__section--level-4 > .main__heading {
+  text-align: left;
+  font-size: 2.5em;
+  background: #faf2f1;
+  padding-top: 0.5em;
+}
+@media (min-width: 801px) {
+  .main__section--level-4 > .main__heading {
+    padding-top: 1.5em;
+  }
+}
+.main__section--level-5 > .main__heading {
+  text-align: left;
+  font-size: 2.25em;
+  background: white;
+  padding-top: 0.5em;
+}
+@media (min-width: 801px) {
+  .main__section--level-5 > .main__heading {
+    padding-top: 1.5em;
+  }
+}
 .main__heading--secondary {
   font-size: 3em;
   color: #2D1214;
