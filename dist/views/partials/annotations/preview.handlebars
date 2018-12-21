@@ -73,17 +73,17 @@
   {{set 'parameterString' '' this}}
 
   {{#each parameter}}
-    {{set 'parameterValue' (concat '$' name) ../.}}
+    {{set 'parameterValue' (combine '$' name) ../.}}
     {{#if default}}
-      {{set 'parameterValue' (concat ../parameterValue ': ' default) ../.}}
+      {{set 'parameterValue' (combine ../parameterValue ': ' default) ../.}}
     {{/if}}
     {{#if (eq (lowercase type) 'arglist')}}
-      {{set 'parameterValue' (concat ../parameterValue '...') ../.}}
+      {{set 'parameterValue' (combine ../parameterValue '...') ../.}}
     {{/if}}
     {{#if @first}}
       {{set 'parameterString' ../parameterValue ../.}}
     {{else}}
-      {{set 'parameterString' (concat ../parameterString ', ' ../parameterValue) ../.}}
+      {{set 'parameterString' (combine ../parameterString ', ' ../parameterValue) ../.}}
     {{/if}}
   {{/each}}
 

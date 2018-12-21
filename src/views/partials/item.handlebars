@@ -11,9 +11,9 @@
     
     {{set 'typeOfAnnotations' (lookup @root.display.annotations context.type) context}}
   
-    {{#forIn context.typeOfAnnotations}}
+    {{#forIn context.typeOfAnnotations}} {{!.}}
   
-      {{> (concat 'annotations/' .) item=this}}
+      {{> (combine 'annotations/' .) item=this}}
   
     {{/forIn}}
   
