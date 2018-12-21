@@ -8,9 +8,9 @@
   
     {{#each items}}
     
-      <li class="sidebar__item sassdoc_item" data-group="{{group}}" data-name="{{context.name}}" data-type="{{type}}">
+      <li class="sidebar__item sassdoc_item" data-group="{{../group}}" data-name="{{context.name}}" data-type="{{../type}}">
         
-        <a href="{{group}}-{{context.type}}-{{context.name}}">
+        <a href="#{{../group}}-{{context.type}}-{{context.name}}">
           
           {{context.name}}
           

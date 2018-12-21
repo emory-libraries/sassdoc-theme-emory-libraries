@@ -1,5 +1,5 @@
 <section class="main__item container item{{#if self.alias}} item--alias{{/if}}{{#contains self 'deprecated'}} item--deprecated{{/contains}}"
-         id="{{self.group.[0]}}-{{self.context.type}}-{{self.context.name}}">
+         id="{{group}}-{{type}}-{{self.context.name}}">
 
   {{> 'annotations/name'}}
   
@@ -20,7 +20,7 @@
   
   {{else}}
   
-    <p>Refer to <a href="#{{self.context.type}}-{{self.alias}}">{{self.alias}}</a>.</p>
+    <p>Refer to <a href="#{{group}}-{{type}}-{{self.alias}}">{{self.alias}}</a>.</p>
   
   {{/not}}
 
