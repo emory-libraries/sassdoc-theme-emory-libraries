@@ -348,7 +348,7 @@ var config = {
               
               return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
               
-            })
+            }).join("\n\t")
           },
           {
             match: 'js',
@@ -361,7 +361,7 @@ var config = {
               
               return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
               
-            })
+            }).join("\n\t")
           },
           {
             match: 'gtm:head',
@@ -394,7 +394,7 @@ var config = {
               
               return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
               
-            })
+            }).join("\n\t")
           },
           {
             match: 'js',
@@ -407,7 +407,7 @@ var config = {
               
               return template.replace(':src', path.join(prefix, src.replace(ext, '') + suffix));
               
-            })
+            }).join("\n\t")
           },
           {
             match: 'gtm:head',

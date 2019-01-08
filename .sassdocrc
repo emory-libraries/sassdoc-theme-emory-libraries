@@ -5,6 +5,7 @@
       "private"
     ],
     "alias": false,
+    "logo": false,
     "watermark": true,
     "annotations": {
       "function": [

@@ -1102,9 +1102,7 @@ pre[class*=language-] {
 }
 .footer__watermark svg {
   display: block;
-  width: 50px;
-  -webkit-filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
-          filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
+  width: 100px;
 }
 
 .project-info__name {
