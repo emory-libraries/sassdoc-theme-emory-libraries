@@ -185,20 +185,20 @@ class Search {
   
   init() {
     
-    // Fuse engine instanciation
+    // Fuse engine instantiation
     this.index = new Fuse($.map($(this.config.search.items), (item) => {
 
       const $item = $(item);
 
       return {
-        group: $item.data('group'),
-        name: $item.data('name'),
-        type: $item.data('type'),
+        group: $item.attr('data-group'),
+        name: $item.attr('data-name'),
+        type: $item.attr('data-type'),
         node: $item
       };
       
     }), this.config.fuse);
-    
+
     this.initSearch();
     
   }
