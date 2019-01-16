@@ -150,7 +150,7 @@ var config = {
     dev: {
       options: {
         sourceMap: false,
-        style: 'expanded'
+        outputStyle: 'expanded'
       },
       files: [{
         expand: true,
@@ -163,7 +163,7 @@ var config = {
     dist: {
       options: {
         sourceMap: false,
-        style: 'compressed'
+        outputStyle: 'compressed'
       },
       files: [{
         expand: true,
