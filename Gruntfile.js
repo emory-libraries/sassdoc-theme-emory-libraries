@@ -129,7 +129,7 @@ const sassdoc = dir.projects.map((project) => {
     },
     src: grunt.file.expand([
       path.join(project, '**/scss/**/*.scss'),
-      '!' + path.join(project, '**/scss/vends/**/*.scss')
+      '!' + path.join(project, '**/scss/**/vends/**/*.scss')
     ])
   };
   
@@ -148,17 +148,20 @@ var config = {
 
   'dart-sass': {
     dev: {
-      options: {
+      /*options: {
         sourceMap: false,
         outputStyle: 'expanded'
-      },
-      files: [{
+      },*/
+      files: {
+        'dist/css/main.css': 'src/scss/main.scss'
+      }
+      /*files: [{
         expand: true,
         cwd: '<%= dir.src.scss %>',
         src: ['*.scss'],
         dest: '<%= dir.dist.css %>',
         ext: '.css'
-      }]
+      }]*/
     },
     dist: {
       options: {

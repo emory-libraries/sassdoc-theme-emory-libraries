@@ -1,5 +1,5 @@
 {
-  "name": "emory-libraries",
+  "name": "sassdoc-theme-emory-libraries",
   "description": "The Emory Libraries SassDoc theme",
   "version": "1.0.0",
   "keywords": [
@@ -19,7 +19,6 @@
   "scripts": {},
   "dependencies": {
     "chroma-js": "^2.0.2",
-    "extend": "^1.0.0",
     "fs-readdir-recursive": "^1.1.0",
     "handlebars": "^4.0.12",
     "handlebars-helpers": "^0.10.0",
@@ -35,6 +34,7 @@
     "@babel/preset-env": "^7.2.3",
     "@lodder/grunt-postcss": "^1.0.6",
     "autoprefixer": "^9.4.5",
+    "extend": "^1.3.0",
     "flat": "^4.1.0",
     "fs-extra": "^7.0.1",
     "grunt": "^1.0.3",
@@ -48,7 +48,7 @@
     "grunt-contrib-jshint": "^2.0.0",
     "grunt-contrib-uglify": "^4.0.0",
     "grunt-contrib-watch": "^1.1.0",
-    "grunt-dart-sass": "^1.1.0",
+    "grunt-dart-sass": "^1.1.1",
     "grunt-newer": "^1.3.0",
     "grunt-replace": "^1.0.1",
     "grunt-sassdoc": "^2.0.3",
