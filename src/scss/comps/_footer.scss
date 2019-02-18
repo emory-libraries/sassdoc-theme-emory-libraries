@@ -37,4 +37,8 @@
     text-indent: -.25em; 
   }
   
+  @include e('copyright') {
+    color: $color-footer-info-text;
+  };
+  
 };
