@@ -10,47 +10,6 @@
 
   {{> content-section level=1 id=group group=group data=data}}
 
-  {{!--
-  {{set 'groupLayers' (split (removeFromBeginning @key (combine @root.namespace '.')) '.') this}}
-  
-  {{#each groupLayers as |groupLayer|}}
-
-    <section class="main__section">
-      <h1 class="main__heading" id="{{lookup @root.groups groupLayer}}">
-        <div class="container">
-          {{lookup @root.groups groupLayer}}
-        </div>
-      </h1>
-
-      {{#each (unpick 'groupLayers' ..) as |items type|}}
-      
-        {{#if (gt this.length 0)}} 
-      
-          <section class="main__sub-section" id="{{@../../key}}-{{type}}">
-            
-            <h2 class="main__heading--secondary">
-              <div class="container">
-                {{type}}s
-              </div>
-            </h2>
-
-            {{#each items as |item|}}
-              {{> item self=item parent=../../../.}}
-            {{/each}}
-            
-          </section>
-      
-        {{/if}}
-
-      {{/each}}
-
-    </section>
-
-  {{/each}}
-
-  {{unset 'groupLayers' this}}
-  --}}
-
 {{/each}}
 
 {{/if}}

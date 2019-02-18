@@ -25,12 +25,14 @@
         </li>
 
       {{else}}
+  
+        {{set 'srcData' (lookup (where (where @root._data.byPatternSrc 'name' item.context.name) 'type' item.context.type) 0) item.context}}
 
         <li class="item__description  item__description--inline">
 
           <span class="item__cross-type">{{item.context.type}}</span>
 
-          <a href="#{{../group}}-{{../type}}-{{item.context.name}}"><code>{{item.context.name}}</code></a>
+          <a href="#{{item.context.srcData.src.[0]}}"><code>{{item.context.name}}</code></a>
 
           {{#if description}}
             &mdash; {{description}}
