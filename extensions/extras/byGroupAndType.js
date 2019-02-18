@@ -9,7 +9,7 @@ module.exports = function byGroupAndType (items, ctx) {
   const regex = new RegExp(`^${ctx.namespace}[.]`, 'i');
   
   // Initialize the sorted data.
-  const sorted = {}
+  const sorted = {};
   
   // Create utility methods to help with sorting.
   const utils = {
