@@ -39,6 +39,12 @@ const dir = {
     image: 'dist/images',
     template: 'dist/views'
   },
+  extensions: {
+    root: 'extensions',
+    annotations: 'extensions/annotations',
+    extras: 'extensions/extras',
+    helpers: 'extensions/helpers',
+  },
   projects: projects.map((project) => path.resolve(project))
 };
 
@@ -196,7 +202,13 @@ var config = {
       tasks: ['svgmin', 'imagemin']
     },
     config: {
-      files: ['index.js', 'Gruntfile.js', '.babelrc', '.jshintrc'],
+      files: [
+        'index.js',
+        'Gruntfile.js', 
+        '.babelrc', 
+        '.jshintrc',
+        '<%= dir.extensions.root %>/**'
+      ],
       tasks: ['sassdoc'],
       options: {
         reload: true
