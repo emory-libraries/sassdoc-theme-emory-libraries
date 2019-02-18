@@ -8,14 +8,12 @@
   {{> 'annotations/preview'}} 
   
   {{#not alias}}
-    
-    {{set 'typeOfAnnotations' (lookup @root.display.annotations context.type) context}}
   
-    {{#forIn context.typeOfAnnotations}}
+    {{#each (lookup @root.display.annotations context.type) as |annotation|}}
   
-      {{> (combine 'annotations/' .) item=../. group=../group type=../type id=../id}}
+      {{> (combine 'annotations/' annotation) item=../. group=../group type=../type id=../id}}
   
-    {{/forIn}}
+    {{/each}}
   
   {{else}}
   
