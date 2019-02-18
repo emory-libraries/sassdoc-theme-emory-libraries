@@ -240,7 +240,7 @@ var config = {
       files: [{
         expand: true,
         cwd: '<%= dir.dist.js %>',
-        src: ['*.js', '!*.min.js'],
+        src: ['**/*.js', '!**/*.min.js'],
         dest: '<%= dir.dist.js %>',
         ext: '.min.js'
       }]
